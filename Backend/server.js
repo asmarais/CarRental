@@ -20,6 +20,16 @@ connectDB();
 
 // API Routes
 app.use('/api/items', itemRoutes);
+// Importation des routes
+const voitureRoutes = require('./routes/carRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
+const userRoutes = require('./routes/itemRoutes');
+
+// API Routes
+app.use('/api/voitures', voitureRoutes);  // Route pour les voitures
+app.use('/api/reservations', reservationRoutes);  // Route pour les réservations
+app.use('/api/users', userRoutes);  // Route pour les utilisateurs
+
 
 // Error Handling Middleware
 app.use(errorHandler);
