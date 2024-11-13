@@ -78,26 +78,92 @@ exports.deleteReservation = async (req, res) => {
   }
 };
 // controllers/reservationController.js
-const QRCode = require('qrcode');
+const QRCode = require('../utils/tokenService');
 
-// Générer le QR code pour une réservation
 exports.generateQrCode = async (req, res) => {
   const { reservation_id, user_id, voiture_id } = req.params;
 
-  // Créer un token unique pour la réservation
-  const token = `${reservation_id}-${user_id}-${voiture_id}-${Date.now()}`;
-
   try {
-    // Générer le QR code à partir du token
-    const qrCodeDataUrl = await QRCode.toDataURL(token);
+    // Vérifier si la réservation existe avec les trois paramètres (reservation_id, user_id, voiture_id)
+    const reservation = await Reservation.findOne({
+      reservation_id:reservation_id,
+      user_id:user_id,
+      voiture_id:voiture_id,
+    });
+
+    if (!reservation) {
+      return res.status(404).json({
+        error: 'Réservation non trouvée ou invalide avec les identifiants fournis.'
+      });
+    }
+
+    // Créer un token unique pour la réservation
+    const token = QRCode.generateQR(reservation_id, user_id, voiture_id);
 
     // Retourner le QR code sous forme d'URL de l'image
     res.status(200).json({
       message: 'QR code généré avec succès',
       token_qr: token,  // Le token pour référence
-      qr_code: qrCodeDataUrl,  // URL du QR code au format base64
     });
   } catch (err) {
     res.status(500).json({ error: 'Erreur lors de la génération du QR code', details: err.message });
+  }
+};
+
+// Fonction pour récupérer les réservations avec filtres facultatifs
+exports.getReservationsWithFilters = async (req, res) => {
+  try {
+    const { 
+      reservation_id, user_id, voiture_id, statut, date_debut, date_fin 
+    } = req.query;
+
+    // Objet de filtrage pour les réservations
+    const reservationFilters = {};
+
+    // Filtrage conditionnel avec validation
+    if (reservation_id && !isNaN(Number(reservation_id))) {
+      reservationFilters.reservation_id = Number(reservation_id);
+    }
+
+    if (user_id && !isNaN(Number(user_id))) {
+      reservationFilters.user_id = Number(user_id);
+    }
+
+    if (voiture_id && !isNaN(Number(voiture_id))) {
+      reservationFilters.voiture_id = Number(voiture_id);
+    }
+
+    if (statut !== undefined) {
+      reservationFilters.statut = statut === 'true';
+    }
+
+    // Validation et ajout des filtres de dates si valides
+    if (date_debut) {
+      const dateDebutObj = new Date(date_debut);
+      if (!isNaN(dateDebutObj)) {
+        reservationFilters.date_debut = { $gte: dateDebutObj };
+      }
+    }
+
+    if (date_fin) {
+      const dateFinObj = new Date(date_fin);
+      if (!isNaN(dateFinObj)) {
+        reservationFilters.date_fin = { $lte: dateFinObj };
+      }
+    }
+
+    // Recherche des réservations dans la base de données avec les filtres
+    const reservations = await Reservation.find(reservationFilters);
+
+    // Vérification si des réservations ont été trouvées
+    if (reservations.length === 0) {
+      return res.status(404).json({ error: 'Aucune réservation trouvée avec les filtres fournis' });
+    }
+
+    // Retour des réservations trouvées
+    res.status(200).json({ reservations });
+  } catch (err) {
+    // Gestion d'erreur
+    res.status(500).json({ error: 'Erreur lors de la récupération des réservations', details: err.message });
   }
 };

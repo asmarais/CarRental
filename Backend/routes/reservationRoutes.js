@@ -21,5 +21,5 @@ router.delete('/:reservation_id', reservationController.deleteReservation);
 // Route pour générer un QR code pour une réservation
 router.get('/:reservation_id/generateQrCode/:user_id/:voiture_id', reservationController.generateQrCode);
 
-
+router.get('/filters', reservationController.getReservationsWithFilters);
 module.exports = router;
