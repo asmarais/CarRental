@@ -1,0 +1,15 @@
+.testimonials-container {
+  height: 300px; /* Adjust this height based on your design */
+  overflow-y: auto; /* Enable vertical scrolling */
+  display: flex;
+  flex-direction: column;
+  scroll-behavior: smooth; /* Smooth scrolling behavior */
+}
+
+.testimonial-item {
+  flex: none; /* Prevents items from stretching */
+  margin-bottom: 15px; /* Space between testimonials */
+}
+.icon-wrap{
+cursor: pointer;
+}

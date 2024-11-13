@@ -1,0 +1,64 @@
+<div class="content-body">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <label for="carSelect">Sélectionner une voiture</label>
+
+        <!-- Sélection de la voiture -->
+        <select id="carSelect"   [(ngModel)]="selectedCarName"   class="form-control mb-3" (change)="onCarSelect($event)">
+          <option value="" disabled selected>Select Car</option>  <!-- Option par défaut -->
+          <option *ngFor="let car of cars" [value]="car.name">{{ car.name }}</option>
+        </select>
+      </div>
+
+      <!-- Bloc de sélection de la localisation de la voiture -->
+      <div class="col-md-12 mb-3">
+        <div class="row">
+          <!-- Input de la localisation de la voiture -->
+          <div class="col-md-8">
+            <input
+              type="text"
+              id="dropoff-location"
+              class="form-control"
+              placeholder="At the beginning selected the car"
+              [value]="OfftLocationAddress"
+              [(ngModel)]="dropOffLocation"
+              (input)="onSearchOff($event)"
+            >
+          </div>
+
+          <!-- Icônes de réinitialisation, de carte et de confirmation -->
+          <div class="col-md-4 d-flex align-items-center" (click)="resetDropOffLocation()">
+            <!-- Icône pour réinitialiser la sélection -->
+            <span *ngIf="dropOffMarker"
+                  class="input-group-text choose-on-map-icon"
+                  (click)="resetDropOffLocation()"
+                  title="Réinitialiser la localisation">❌</span>
+
+            <!-- Icône pour choisir une localisation sur la carte -->
+            <span *ngIf="!dropOffMarker"
+                  class="input-group-text choose-on-map-icon"
+                  (click)="chooseDropOffLocationOnMap()"
+                  title="Choisir une localisation sur la carte">📍</span>
+
+            <!-- Icône pour confirmer la sélection -->
+            <span *ngIf="showConfirmButton"
+                  class="input-group-text choose-on-map-icon"
+                  (click)="confirmChangePosition()"
+                  title="Confirmer la nouvelle position">✔️</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message d'information sur l'activation de la sélection -->
+      <div *ngIf="mapClickMode" class="map-selection-message">
+        Cliquez sur la carte pour choisir une localisation ou appuyez sur <strong style="color: red;">Échap</strong> pour annuler.
+      </div>
+    </div>
+
+    <!-- Carte -->
+    <div class="col-md-12 mt-3">
+      <div id="map" style="height: 500px;"></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,219 @@
+<div class="content-body bootstrap snippets bootdey">
+  <div class="container-fluid">
+  <div class="row ">
+    <div class="col-lg-12">
+          <div class="main-box no-header clearfix">
+              <div class="main-box-body clearfix">
+                  <div class="table-responsive">
+                      <table class="table widget-26">
+                          <thead>
+                              <tr>
+                              <th><span>User</span></th>
+                              <th><span>Created</span></th>
+                              <th class="text-center"><span>Status</span></th>
+                              <th><span>Email</span></th>
+                              <th>&nbsp;</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>
+                                      <img class="user-avatar" src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                      <h5 href="#" class="user-link">Full name 1</h5>
+                                      <span class="user-subhead">Member</span>
+                                  </td>
+                                  <td>2013/08/12</td>
+                                  <td class="text-center">
+                                      <span class="label label-default">pending</span>
+                                  </td>
+                                  <td>
+                                      <a href="#">marlon@brando.com</a>
+                                  </td>
+                                  <td style="width: 15%;">
+                                    <i (click)="OpenProfil()" class="fa fa-eye fa-2x"></i>
+                                    &nbsp;&nbsp;&nbsp;
+                                      <i  (click)="OpenEdit()" style="color: green;" class="fa fa-edit fa-2x"></i>
+                                      &nbsp;&nbsp;&nbsp;
+                                      <i style="color: red;" class="fa fa-trash fa-2x"></i>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>
+                                      <img class="user-avatar" src="https://bootdey.com/img/Content/user_3.jpg" alt="">
+                                      <h5 href="#" class="user-link">Full name 2</h5>
+                                      <span class="user-subhead">Admin</span>
+                                  </td>
+                                  <td>2013/08/12</td>
+                                  <td class="text-center">
+                                      <span class="label label-success">Active</span>
+                                  </td>
+                                  <td>
+                                      <a href="#">marlon@brando.com</a>
+                                  </td>
+                                  <td style="width: 15%;">
+                                    <i class="fa fa-eye fa-2x"></i>
+                                    &nbsp;&nbsp;&nbsp;
+                                      <i style="color: green;" class="fa fa-edit fa-2x"></i>
+                                      &nbsp;&nbsp;&nbsp;
+                                      <i style="color: red;" class="fa fa-trash fa-2x"></i>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>
+                                      <img class="user-avatar" src="https://bootdey.com/img/Content/user_2.jpg" alt="">
+                                      <h5 href="#" class="user-link">Full name 3</h5>
+                                      <span class="user-subhead">Member</span>
+                                  </td>
+                                  <td>2013/08/12</td>
+                                  <td class="text-center">
+                                      <span class="label label-danger">inactive</span>
+                                  </td>
+                                  <td>
+                                      <a href="#">marlon@brando.com</a>
+                                  </td>
+                                  <td style="width: 15%;">
+                                    <i class="fa fa-eye fa-2x"></i>
+                                    &nbsp;&nbsp;&nbsp;
+                                      <i style="color: green;" class="fa fa-edit fa-2x"></i>
+                                      &nbsp;&nbsp;&nbsp;
+                                      <i style="color: red;" class="fa fa-trash fa-2x"></i>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</div>
+
+
+<!--Modal Open profil -->
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLabel">User details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="CloseProfil()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-8">
+            <div class="card-body">
+              <small class="text-muted">Prénom</small>
+              <h6>bahaa</h6>
+              <small class="text-muted">Nom</small>
+              <h6>bahaa</h6>
+              <small class="text-muted">Email</small>
+              <h6>bahaa@example.com</h6>
+              <small class="text-muted p-t-30 db">N° Tel</small>
+              <h6>123-456-7890</h6>
+              <small class="text-muted p-t-30 db">Date De Naissance</small>
+              <h6>1995-01-01</h6>
+            </div>
+          </div>
+
+          <div class="col-4 text-center">
+            <img src="https://bootdey.com/img/Content/user_2.jpg" width="120" class="rounded-circle">
+            <h4 class="card-title m-t-10">bahaa</h4>
+            <div class="row text-center justify-content-md-center">
+              <div class="col-12">ID: 11</div>
+            </div>
+            <div class="badge rounded-pill bg-primary mt-2">
+              <span>Status</span>
+            </div>
+          </div>
+        </div>
+      <hr>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Edit profil -->
+<div class="modal fade" id="editProfil" tabindex="-1" role="dialog" aria-labelledby="editProfilLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg"   role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProfilLabel">Edit User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="CloseEdit()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="row gutters">
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <h6 class="mb-2 text-primary">Personal Details</h6>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="fullName">Full Name</label>
+                  <input type="text" class="form-control" id="fullName" placeholder="Enter full name">
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="eMail">Email</label>
+                  <input type="email" class="form-control" id="eMail" placeholder="Enter email ID">
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="phone">Phone</label>
+                  <input type="text" class="form-control" id="phone" placeholder="Enter phone number">
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="website">Website URL</label>
+                  <input type="url" class="form-control" id="website" placeholder="Website url">
+                </div>
+              </div>
+            </div>
+            <div class="row gutters">
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <h6 class="mt-3 mb-2 text-primary">Address</h6>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="Street">Street</label>
+                  <input type="name" class="form-control" id="Street" placeholder="Enter Street">
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="ciTy">City</label>
+                  <input type="name" class="form-control" id="ciTy" placeholder="Enter City">
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="sTate">State</label>
+                  <input type="text" class="form-control" id="sTate" placeholder="Enter State">
+                </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                <div class="form-group">
+                  <label for="zIp">Zip Code</label>
+                  <input type="text" class="form-control" id="zIp" placeholder="Zip Code">
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row gutters">
+              <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="d-flex justify-content-end"> <!-- Utilisation de flexbox pour aligner à droite -->
+                  <button type="button" class="btn btn-secondary" (click)="CloseEdit()" data-dismiss="modal">Cancel</button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <button type="button" class="btn btn-primary">Update</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+  </div>
+</div>
