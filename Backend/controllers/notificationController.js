@@ -109,28 +109,54 @@ exports.getNotificationById = async (req, res) => {
     res.status(500).json({ error: 'Error fetching notification', details: err.message });
   }
 };
-// Récupérer toutes les notifications avec le filtre `read` uniquement
-exports.getNotificationsByStatus = async (req, res) => {
-    try {
-      const { status } = req.params; // On utilise req.params ici pour récupérer le statut dans l'URL
-  
-      // Vérifier si le statut est valide (true ou false)
-      const isRead = status === 'true'; // Convertir 'true'/'false' en booléen
-  
-      // Recherche des notifications avec le statut de lecture spécifié
-      const notifications = await Notification.find({ read: isRead });
-  
-      // Si aucune notification n'est trouvée, renvoyer une erreur 404
-      if (notifications.length === 0) {
-        return res.status(404).json({ error: 'Aucune notification trouvée pour le statut de lecture spécifié' });
+exports.getNotificationsWithFilters = async (req, res) => {
+  try {
+    // Extract query parameters
+    const { notification_id, user_id, read, created_at_start, created_at_end } = req.query;
+
+    // Create the filter object for notifications
+    const notificationFilters = {};
+
+    // Apply filters if they are provided
+    if (notification_id) notificationFilters.notification_id = Number(notification_id);
+    if (user_id) notificationFilters.user_id = Number(user_id);
+    if (read !== undefined) notificationFilters.read = read === 'true'; // Convert 'true'/'false' string to boolean
+
+    // Filter by creation date range, if provided
+    if (created_at_start) {
+      const startDate = new Date(created_at_start);
+      if (!isNaN(startDate)) {
+        notificationFilters.created_at = { $gte: startDate };
+      } else {
+        return res.status(400).json({ error: 'Invalid created_at_start value' });
       }
-  
-      // Retourner les notifications trouvées
-      return res.status(200).json({ notifications });
-  
-    } catch (err) {
-      // En cas d'erreur, retourner un message d'erreur
-      return res.status(500).json({ error: 'Erreur lors de la récupération des notifications', details: err.message });
     }
-  };
-  
+    if (created_at_end) {
+      const endDate = new Date(created_at_end);
+      if (!isNaN(endDate)) {
+        // If created_at filter is already present (from start), extend its range
+        if (notificationFilters.created_at) {
+          notificationFilters.created_at.$lte = endDate;
+        } else {
+          notificationFilters.created_at = { $lte: endDate };
+        }
+      } else {
+        return res.status(400).json({ error: 'Invalid created_at_end value' });
+      }
+    }
+
+    // Fetch notifications based on the constructed filters
+    const notifications = await Notification.find(notificationFilters);
+
+    // If no notifications are found
+    if (notifications.length === 0) {
+      return res.status(404).json({ error: 'No notifications found with the specified filters' });
+    }
+
+    // Return the found notifications
+    return res.status(200).json({ notifications });
+  } catch (err) {
+    // Handle errors
+    return res.status(500).json({ error: 'Error fetching notifications', details: err.message });
+  }
+};

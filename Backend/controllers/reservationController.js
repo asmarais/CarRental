@@ -110,60 +110,58 @@ exports.generateQrCode = async (req, res) => {
   }
 };
 
-// Fonction pour récupérer les réservations avec filtres facultatifs
+const logger = console; // Basic logger (can be replaced with more sophisticated logging library)
+
 exports.getReservationsWithFilters = async (req, res) => {
   try {
     const { 
       reservation_id, user_id, voiture_id, statut, date_debut, date_fin 
     } = req.query;
 
-    // Objet de filtrage pour les réservations
+    // Create the filter object for reservations
     const reservationFilters = {};
 
-    // Filtrage conditionnel avec validation
-    if (reservation_id && !isNaN(Number(reservation_id))) {
-      reservationFilters.reservation_id = Number(reservation_id);
-    }
+    // Apply filters if they are provided in the query string
+    if (reservation_id) reservationFilters.reservation_id = Number(reservation_id);
+    if (user_id) reservationFilters.user_id = Number(user_id);
+    if (voiture_id) reservationFilters.voiture_id = Number(voiture_id);
 
-    if (user_id && !isNaN(Number(user_id))) {
-      reservationFilters.user_id = Number(user_id);
-    }
+    // Filter for status (true/false)
+    if (statut !== undefined) reservationFilters.statut = statut === 'true';  // true for active, false for canceled
 
-    if (voiture_id && !isNaN(Number(voiture_id))) {
-      reservationFilters.voiture_id = Number(voiture_id);
-    }
-
-    if (statut !== undefined) {
-      reservationFilters.statut = statut === 'true';
-    }
-
-    // Validation et ajout des filtres de dates si valides
+    // Filter for date_debut if provided
     if (date_debut) {
       const dateDebutObj = new Date(date_debut);
       if (!isNaN(dateDebutObj)) {
         reservationFilters.date_debut = { $gte: dateDebutObj };
+      } else {
+        return res.status(400).json({ error: 'Invalid date_debut value' });
       }
     }
 
+    // Filter for date_fin if provided
     if (date_fin) {
       const dateFinObj = new Date(date_fin);
       if (!isNaN(dateFinObj)) {
         reservationFilters.date_fin = { $lte: dateFinObj };
+      } else {
+        return res.status(400).json({ error: 'Invalid date_fin value' });
       }
     }
 
-    // Recherche des réservations dans la base de données avec les filtres
+    // Fetch reservations based on the filters
     const reservations = await Reservation.find(reservationFilters);
 
-    // Vérification si des réservations ont été trouvées
+    // If no reservations match the filters
     if (reservations.length === 0) {
-      return res.status(404).json({ error: 'Aucune réservation trouvée avec les filtres fournis' });
+      return res.status(404).json({ error: 'No reservations found with the given filters' });
     }
 
-    // Retour des réservations trouvées
+    // Return the found reservations
     res.status(200).json({ reservations });
   } catch (err) {
-    // Gestion d'erreur
-    res.status(500).json({ error: 'Erreur lors de la récupération des réservations', details: err.message });
+    // Error handling
+    console.error('Error fetching reservations:', err);
+    res.status(500).json({ error: 'Error fetching reservations', details: err.message });
   }
 };

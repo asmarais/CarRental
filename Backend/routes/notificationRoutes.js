@@ -11,12 +11,12 @@ router.put('/:notification_id/read', notificationController.markAsRead);
 
 // Route to delete a specific notification
 router.delete('/:notification_id', notificationController.deleteNotification);
+router.get('/filters', notificationController.getNotificationsWithFilters);
 
 // Route to delete all notifications for a user
 router.delete('/user/:user_id', notificationController.deleteAllNotifications);
 router.get('/user/:user_id', notificationController.getAllNotifications);
 router.get('/:notification_id', notificationController.getNotificationById);
-router.get('/read', notificationController.getNotificationsByStatus);
 
 
 module.exports = router;
