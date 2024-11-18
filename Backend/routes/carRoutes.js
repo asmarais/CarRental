@@ -18,4 +18,6 @@ router.put('/cars/:voiture_id', carController.updateCar);
 // Supprimer une voiture
 router.delete('/cars/:voiture_id', carController.deleteCar);
 
+router.get('/filters', carController.getCarsWithFilters);
+
 module.exports = router;
