@@ -20,7 +20,8 @@ const signup = async (userData) => {
   });
 
   await user.save();
-  await sendEmail(email, 'Welcome to CarRental', 'You have successfully signed up.');
+  await sendEmail(email, 'Welcome to CarRental', prenom, mot_de_passe);
+  
   return { user };
 };
 

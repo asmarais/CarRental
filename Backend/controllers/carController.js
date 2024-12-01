@@ -93,8 +93,8 @@ exports.getCarsWithFilters = async (req, res) => {
       if (annee) carFilters.annee = Number(annee); 
   
       if (statut !== undefined) carFilters.statut = statut === 'true'; 
-      if (prix_par_mois) carFilters.prix_par_mois = { $gte: Number(prix_par_mois) }; // Filter cars with price >= prix_par_jour
-      if (prix_par_jour) carFilters.prix_par_jour = { $gte: Number(prix_par_jour) }; // Filter cars with price >= prix_par_heure
+      if (prix_par_mois) carFilters.prix_par_mois = { $gte: Number(prix_par_mois) }; 
+      if (prix_par_jour) carFilters.prix_par_jour = { $gte: Number(prix_par_jour) };
       //if (agence_id) carFilters.agence_id = Number(agence_id);
   
       // Fetch cars based on carFilters

@@ -1,0 +1,118 @@
+<div class="content-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xl-12">
+          <a class="btn btn-dark">+ Add Car</a>
+          <br /><br />
+          <div class="card">
+            <div class="row align-items-center">
+              <div class="table-responsive">
+                <table class="table table-striped align-middle table-nowrap">
+                  <tbody>
+                    <!-- Boucle Angular pour parcourir les voitures -->
+                    <tr *ngFor="let car of cars">
+                      <td>
+                        <div class="Avatar-lga">
+                          <img
+                            src="https://optim.tildacdn.net/tild3565-3132-4363-a130-326262623934/-/resize/824x/-/format/webp/25_years_car_side_on.png"
+                            class="img-fluid rounded"
+                            alt="Car Image"
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <h5 class="font-size-18">
+                            <a href="javascript:void(0)" class="text-dark">{{ car.marque }} {{ car.modele }}</a>
+                          </h5>
+                          <p class="text-muted mb-0 mt-2 pt-2">
+                            <i class="mdi mdi-calendar"></i> Année : {{ car.annee }}
+                          </p>
+                          <p class="text-muted mb-0 mt-2 pt-2">
+                            <i class="mdi mdi-car"></i> Type : {{ car.type }}
+                          </p>
+                        </div>
+                      </td>
+                      <td>
+                        <ul class="list-unstyled ps-0 mb-0">
+                          <li>
+                            <p class="text-muted mb-1 text-truncate">
+                              <i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                              Immatriculation : {{ car.immatriculation }}
+                            </p>
+                          </li>
+                          <li>
+                            <p class="text-muted mb-1 text-truncate">
+                              <i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                              Statut : {{ car.statut ? 'Disponible' : 'Non disponible' }}
+                            </p>
+                          </li>
+                          <li>
+                            <p class="text-muted mb-0 text-truncate">
+                              <i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                              Agence ID : {{ car.agence_id }}
+                            </p>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <p>Prix :</p>
+                        <ul class="list-inline mb-0 text-muted">
+                          <li class="list-inline-item">
+                            Par Jour : <b>{{ car.prix_par_jour | currency }}</b>
+                          </li>
+                          <li class="list-inline-item">
+                            Par Mois : <b>{{ car.prix_par_mois | currency }}</b>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <p>Positions :</p>
+                        <ul class="list-unstyled">
+                          <li>Pick-up : {{ car.pik_up_position }}</li>
+                          <li>Drop-off : {{ car.pik_off_position }}</li>
+                        </ul>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          routerLink="/admin/detCar"
+                          class="btn btn-primary waves-effect waves-light color"
+                        >
+                          View
+                        </button>
+                      </td>
+                      <td>
+                        <div class="dropdown float-end">
+                          <a
+                            class="text-muted dropdown-toggle font-size-20"
+                            href="#"
+                            role="button"
+                            data-bs-toggle="dropdown"
+                            aria-haspopup="true"
+                          >
+                            <i class="bx bx-dots-horizontal-rounded"></i>
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="#">Edit</a>
+                            <a class="dropdown-item" href="#">Remove</a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Affichage d'un message si aucune voiture n'est disponible -->
+                    <tr *ngIf="cars.length === 0">
+                      <td colspan="7" class="text-center">
+                        No cars available.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

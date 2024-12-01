@@ -1,0 +1,90 @@
+<div class="navg"></div>
+<section class="ftco-section ftco-no-pt" >
+  <div class="container-fluid" >
+    <div class="row no-gutters main-row" >
+      <!-- Formulaire de réservation (colonne gauche) -->
+      <div class="col-md-3 booking-column" >
+        <form action="#" class="request-form " #reservationForm="ngForm" (ngSubmit)="submitReservation(reservationForm)">
+          <h2>Make your trip</h2>
+          <div *ngIf="noCarsMessage" class="alert alert-danger mt-3 text-center">
+            {{ noCarsMessage }}
+          </div>
+          <div class="form-group position-relative">
+            <label for="pickup-location" class="label">1 / &nbsp; Pick-up location <small>&nbsp;&nbsp; if not your current location</small> </label>
+            <div class="input-group mb-2">
+            <input type="text" id="pickup-location" class="form-control" [value]="currentLocationAddress" [(ngModel)]="pickupLocation" name="pickupLocation" (input)="onSearch($event)" placeholder="City, Airport, Station, etc">
+            <div class="input-group-append ">
+              <span
+                    class="input-group-text choose-on-map-icon"
+                    (click)="goToCurrentLocation()"
+                    title="Reset location on map"
+                    alt="Return to my position">🏠</span>
+            </div>
+          </div>
+          </div>
+
+          <div class="form-group position-relative">
+            <label class="label" >2 / &nbsp; Select your car on maps &nbsp;&nbsp; <span
+              *ngIf="selectedCarPosition"
+              class=" choose-on-map-icon"
+              (click)="cancelCarSelection()"
+              title="cancel car selection"
+              alt="cancel car selection">❌</span>
+            </label>
+          </div>
+          
+          <div class="form-group position-relative">
+            <label for="dropoff-location" class="label">3 / &nbsp; Drop-off location</label>
+            <div class="input-group mb-2">
+              <input type="text" id="dropoff-location" class="form-control" [(ngModel)]="dropOffLocation" name="dropOffLocation" placeholder="City, Airport, Station, etc" required>
+              <div class="input-group-append" (click)="resetDropOffLocation()">
+                <span *ngIf="dropOffMarker" class="input-group-text choose-on-map-icon" title="Reset location on map" alt="Reset location on map">❌</span>
+              </div>
+              <div class="input-group-append">
+                <span *ngIf="!dropOffMarker" class="input-group-text choose-on-map-icon" (click)="chooseDropOffLocationOnMap()" title="Choose location on map" alt="Choose location on map">📍</span>
+              </div>
+            </div>
+          </div>
+
+<!-- Message d'information sur l'activation de la sélection -->
+<div *ngIf="mapClickMode" class="map-selection-message">
+  Click on the map to choose a drop-off location or press  <strong style="color: red;">Échap</strong> to cancel.
+</div>
+
+          <div class="form-group position-relative">
+            <label class="label" >4 / </label>
+
+          <div class="d-flex">
+            <div class="form-group mr-2">
+              <label for="book_pick_date" class="label">Pick-up date</label>
+              <input type="text" id="book_pick_date" class="form-control" placeholder="Date" [(ngModel)]="pickupDate" name="pickupDate">
+            </div>
+            <div class="form-group ml-2">
+              <label for="book_off_date" class="label">Drop-off date</label>
+              <input type="text" id="book_off_date" class="form-control" placeholder="Date" [(ngModel)]="dropOffDate" name="dropOffDate">
+            </div>
+          </div>
+
+          <div class="form-group position-relative">
+            <label for="time_pick" class="label">Pick-up time</label>
+            <input type="text" id="time_pick" class="form-control" placeholder="Time" [(ngModel)]="pickupTime" name="pickupTime">
+          </div>
+        </div>
+          <div class="form-group position-relative">
+            <input type="submit" (click)="goPay()" value="Rent A Car Now" class="btn btn-secondary py-3 px-4">
+          </div>
+        </form>
+
+      </div>
+
+   <!-- Carte (colonne droite) -->
+   <div class="col-md-9 map-column">
+    <div class="rounded-right w-100" style="height: 100%;">
+      <!-- Carte -->
+      <div id="map" style="height: 100%; width: 100%;"></div>
+    </div>
+  </div>
+
+    </div>
+  </div>
+</section>
