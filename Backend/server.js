@@ -1,13 +1,16 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
-// Import config, routes, and middleware
 const connectDB = require('./config/db');
-const itemRoutes = require('./routes/authRoutes');
 const errorHandler = require('./middleware/errorHandler');
+
+const voitureRoutes = require('./routes/carRoutes');
+const reservationRoutes = require('./routes/reservationRoutes');
+const authRoutes = require('./routes/authRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const userRoutes = require('./routes/userRoutes')
 
 const app = express();
 
@@ -19,28 +22,14 @@ app.use(cors());
 connectDB();
 
 // API Routes
-app.use('/api/items', itemRoutes);
-// Importation des routes
-const voitureRoutes = require('./routes/carRoutes');
-const reservationRoutes = require('./routes/reservationRoutes');
-const userRoutes = require('./routes/authRoutes');
-// Import notification routes
-const notificationRoutes = require('./routes/notificationRoutes');
-
-
-
-
-// API Routes
-app.use('/api/voitures', voitureRoutes);  // Route pour les voitures
-app.use('/api/reservations', reservationRoutes);  // Route pour les réservations
-app.use('/api/users', userRoutes);  // Route pour les utilisateurs
+app.use('/api/voitures', voitureRoutes); 
+app.use('/api/reservations', reservationRoutes); 
+app.use('/api/auth', authRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/user', userRoutes)
 
-
-// Error Handling Middleware
 app.use(errorHandler);
 
-// Start the server
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

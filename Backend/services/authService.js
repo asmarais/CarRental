@@ -1,14 +1,11 @@
-// services/authService.js
 const bcrypt = require('bcryptjs');
 const { User } = require('../models/userModel');
 const { generateToken } = require('../utils/tokenService');
 const { sendEmail } = require('../utils/emailService');
 
-// Signup Service
 const signup = async (userData) => {
-  const { nom, prenom, email, mot_de_passe, numero_de_telephone, adresse } = userData;
+  const { nom, prenom, email, mot_de_passe, numero_de_telephone, adresse, cin } = userData;
 
-  // Check if user already exists
   const userExists = await User.findOne({ email });
   if (userExists) throw new Error('Email already in use');
 
@@ -19,16 +16,12 @@ const signup = async (userData) => {
     mot_de_passe,
     numero_de_telephone,
     adresse,
+    cin, 
   });
 
   await user.save();
-
-  // Send a welcome email
-  await sendEmail(email, 'Welcome to Our Service', 'You have successfully signed up.');
-
-  const token = generateToken(user);
-
-  return { user, token };
+  await sendEmail(email, 'Welcome to CarRental', 'You have successfully signed up.');
+  return { user };
 };
 
 const login = async ({ email, mot_de_passe }) => {

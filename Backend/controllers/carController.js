@@ -3,10 +3,9 @@ const Car = require('../models/car');
 // Créer une nouvelle voiture
 exports.createCar = async (req, res) => {
   try {
-    const { voiture_id, marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut, agence_id,pik_up_position,pik_off_position } = req.body;
+    const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position } = req.body;
     
     const newCar = new Car({
-      voiture_id,
       marque,
       annee,
       modele,
@@ -15,7 +14,6 @@ exports.createCar = async (req, res) => {
       prix_par_mois,
       prix_par_jour,
       statut,
-      agence_id,
       pik_up_position,
       pik_off_position
     });
@@ -89,15 +87,15 @@ exports.getCarsWithFilters = async (req, res) => {
       const carFilters = {};
   
       if (voiture_id) carFilters.voiture_id = voiture_id;
-      if (marque) carFilters.marque = { $regex: marque, $options: 'i' }; // Case-insensitive search
+      if (marque) carFilters.marque = { $regex: marque, $options: 'i' }; 
       if (type) carFilters.type = { $regex: type, $options: 'i' };
       if (modele) carFilters.modele = { $regex: modele, $options: 'i' };
-      if (annee) carFilters.annee = Number(annee); // Ensure annee is numeric
+      if (annee) carFilters.annee = Number(annee); 
   
-      if (statut !== undefined) carFilters.statut = statut === 'true'; // true for available, false for unavailable
+      if (statut !== undefined) carFilters.statut = statut === 'true'; 
       if (prix_par_mois) carFilters.prix_par_mois = { $gte: Number(prix_par_mois) }; // Filter cars with price >= prix_par_jour
       if (prix_par_jour) carFilters.prix_par_jour = { $gte: Number(prix_par_jour) }; // Filter cars with price >= prix_par_heure
-      if (agence_id) carFilters.agence_id = Number(agence_id);
+      //if (agence_id) carFilters.agence_id = Number(agence_id);
   
       // Fetch cars based on carFilters
       const cars = await Car.find(carFilters);

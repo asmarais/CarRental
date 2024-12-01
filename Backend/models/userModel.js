@@ -5,10 +5,8 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 const Role = {
   USER: 'user',
   ADMIN: 'admin',
-  MODERATOR: 'moderator',
 };
 
-// User Schema
 const userSchema = new mongoose.Schema({
   user_id: { type: Number, unique: true },
   nom: { type: String, required: true },
@@ -23,13 +21,11 @@ const userSchema = new mongoose.Schema({
     enum: Object.values(Role),
     default: Role.USER,
   },
-  statut_verification: { type: Boolean, default: false },
+  cin: { type: String, required: true },
 });
 
-// Auto-increment for user_id
 userSchema.plugin(AutoIncrement, { inc_field: 'user_id' });
 
-// Hash password before saving the document
 userSchema.pre('save', async function (next) {
   if (!this.isModified('mot_de_passe')) {
     return next();
@@ -44,7 +40,6 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-// Password comparison method
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.mot_de_passe);
 };
