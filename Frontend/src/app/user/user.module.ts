@@ -15,7 +15,6 @@ import { ContactComponent } from './contact/contact.component';
 import { ProfileComponent } from './profile/profile.component';
 import { FormsModule } from '@angular/forms';
 import { PayementComponent } from './payement/payement.component';
-import { QRCodeModule } from 'angularx-qrcode';
 
 
 @NgModule({
@@ -37,7 +36,6 @@ import { QRCodeModule } from 'angularx-qrcode';
     CommonModule,
     UserRoutingModule,
     FormsModule,
-    QRCodeModule,
 
 
   ]

@@ -69,13 +69,11 @@ const updateUserById = async (req, res) => {
 
     user.nom = nom || user.nom;
     user.prenom = prenom || user.prenom;
-    user.email = email || user.email;
     user.mot_de_passe = mot_de_passe || user.mot_de_passe;
     user.numero_de_telephone = numero_de_telephone || user.numero_de_telephone;
     user.adresse = adresse || user.adresse;
     user.cin = cin || user.cin;
 
-    // Hash the password before saving if it was changed
     if (mot_de_passe) {
       const salt = await bcrypt.genSalt(10);
       user.mot_de_passe = await bcrypt.hash(mot_de_passe, salt);

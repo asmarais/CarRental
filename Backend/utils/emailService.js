@@ -12,7 +12,7 @@ const sendEmail = async (to, subject = "CarRental",prenom,  mot_de_passe) => {
     },
   });
 
-  const emailContent = `
+  const emailContent = ` 
   <!DOCTYPE html>
   <html>
   <head>
