@@ -1,0 +1,151 @@
+<div class="content-body bootstrap snippets bootdey">
+  <div class="container-fluid">
+  <div class="row ">
+    <div class="col-lg-12">
+          <div class="main-box no-header clearfix">
+              <div class="main-box-body clearfix">
+                  <div class="table-responsive">
+                      <table class="table widget-26">
+                          <thead>
+                              <tr>
+                              <th><span>User</span></th>
+                              <th><span>Created</span></th>
+                              <th class="text-center"><span>Status</span></th>
+                              <th><span>Email</span></th>
+                              <th>&nbsp;</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let user of users">
+                              <td>
+                                <img class="user-avatar" src="https://bootdey.com/img/Content/user_1.jpg" alt="">
+                                <h5 href="#" class="user-link">{{ user.prenom }} {{ user.nom }}</h5>
+                                <span class="user-subhead">{{ user.role }}</span>
+                              </td>
+                              <td>{{ user.date_de_creation | date:'yyyy/MM/dd' }}</td>
+                              <td class="text-center">
+                                <span class="label" [ngClass]="{
+                                  'label-default': user.role === 'user',
+                                  'label-success': user.role === 'admin',
+                                  'label-danger': user.role === 'inactive'
+                                }">{{ user.role }}</span>
+                              </td>
+                              <td>
+                                <a href="#">{{ user.email }}</a>
+                              </td>
+                              <td style="width: 15%;">
+                                <i (click)="OpenProfil(user.user_id)" class="fa fa-eye fa-2x"></i>
+                                &nbsp;&nbsp;&nbsp;
+                                <i (click)="OpenEdit(user.user_id)" style="color: green;" class="fa fa-edit fa-2x"></i>
+                                &nbsp;&nbsp;&nbsp;
+                                <i (click)="deleteUser(user.user_id)" style="color: red;" class="fa fa-trash fa-2x"></i>
+                              </td>
+                            </tr>                            
+                          </tbody>
+                          
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</div>
+
+
+<!--Modal Open profil -->
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLabel">User details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="CloseProfil()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedUser">
+        <div class="row">
+          <div class="col-8">
+            <div class="card-body">
+              <small class="text-muted">Last name</small>
+              <h6>{{ selectedUser.user.prenom }}</h6>
+              <small class="text-muted">Name</small>
+              <h6>{{ selectedUser.user.nom }}</h6>
+              <small class="text-muted">Adresse</small>
+              <h6>{{ selectedUser.user.adresse }}</h6>
+              <small class="text-muted p-t-30 db">Phone number</small>
+              <h6>{{ selectedUser.user.numero_de_telephone }}</h6>
+            </div>
+          </div>
+          <div class="col-4 text-center">
+            <img src="https://bootdey.com/img/Content/user_2.jpg" width="120" class="rounded-circle">
+            <h4 class="card-title m-t-10">{{ selectedUser.user.prenom }}</h4>
+            <div class="badge rounded-pill bg-primary mt-2">
+              <span>{{ selectedUser.user.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<!-- Modal Edit profil -->
+<div class="modal fade" id="editProfil" tabindex="-1" role="dialog" aria-labelledby="editProfilLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg"   role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProfilLabel">Edit User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="CloseEdit()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedUser">
+        <div class="row">
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="prenom">Last Name</label>
+              <input [(ngModel)]="selectedUser.prenom" type="text" class="form-control" id="prenom">
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="nom">Name</label>
+              <input [(ngModel)]="selectedUser.nom" type="text" class="form-control" id="nom">
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="adresse">Adresse</label>
+              <input [(ngModel)]="selectedUser.adresse" type="text" class="form-control" id="adresse">
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="numero">Phone Number</label>
+              <input [(ngModel)]="selectedUser.numero_de_telephone" type="text" class="form-control" id="numero">
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="cin">CIN</label>
+              <input [(ngModel)]="selectedUser.cin" type="text" class="form-control" id="cin">
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="password">Mot de passe</label>
+              <input [(ngModel)]="selectedUser.mot_de_passe" type="password" class="form-control" id="password">
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="button" class="btn btn-secondary" (click)="CloseEdit()">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="updateUser()">Update</button>
+        </div>
+      </div>
+      
+      
+        </div>
+  </div>
+</div>

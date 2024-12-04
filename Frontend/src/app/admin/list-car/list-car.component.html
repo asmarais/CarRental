@@ -1,0 +1,233 @@
+<div class="content-body">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xl-12">
+          <!-- Bouton + Add Car -->
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addCarModal">+ Add Car</button>
+        <br><br>
+          <div class="card">
+            <div class="row align-items-center">
+              <div class="table-responsive">
+                <table class="table table-striped align-middle table-nowrap">
+                  <tbody>
+                    <!-- Boucle Angular pour parcourir les voitures -->
+                    <tr *ngFor="let car of cars">
+                      <td>
+                        <div class="Avatar-lga">
+                          <img
+                            src="https://optim.tildacdn.net/tild3565-3132-4363-a130-326262623934/-/resize/824x/-/format/webp/25_years_car_side_on.png"
+                            class="img-fluid rounded"
+                            alt="Car Image"
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <h5 class="font-size-18">
+                            <a href="javascript:void(0)" class="text-dark">{{ car.marque }} {{ car.modele }}</a>
+                          </h5>
+                          <p class="text-muted mb-0 mt-2 pt-2">
+                            <i class="mdi mdi-calendar"></i> Année : {{ car.annee }}
+                          </p>
+                          <p class="text-muted mb-0 mt-2 pt-2">
+                            <i class="mdi mdi-car"></i> Type : {{ car.type }}
+                          </p>
+                        </div>
+                      </td>
+                      <td>
+                        <ul class="list-unstyled ps-0 mb-0">
+                          <li>
+                            <p class="text-muted mb-1 text-truncate">
+                              <i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                              Immatriculation : {{ car.immatriculation }}
+                            </p>
+                          </li>
+                          <li>
+                            <p class="text-muted mb-1 text-truncate">
+                              <i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                              Statut : {{ car.statut ? 'Disponible' : 'Non disponible' }}
+                            </p>
+                          </li>
+                          <li>
+                            <p class="text-muted mb-0 text-truncate">
+                              <i class="mdi mdi-circle-medium align-middle text-primary me-1"></i>
+                              Agence ID : {{ car.agence_id }}
+                            </p>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <p>Prix :</p>
+                        <ul class="list-inline mb-0 text-muted">
+                          <li class="list-inline-item">
+                            Par Jour : <b>{{ car.prix_par_jour | currency }}</b>
+                          </li>
+                          <li class="list-inline-item">
+                            Par Mois : <b>{{ car.prix_par_mois | currency }}</b>
+                          </li>
+                        </ul>
+                      </td>
+                      <td>
+                        <p>Positions :</p>
+                        <ul class="list-unstyled">
+                          <li>Pick-up : {{ car.pik_up_position }}</li>
+                          <li>Drop-off : {{ car.pik_off_position }}</li>
+                        </ul>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          routerLink="/admin/detCar"
+                          class="btn btn-primary waves-effect waves-light color"
+                        >
+                          View
+                        </button>
+                      </td>
+                      <!-- Menu Dropdown Edit/Delete -->
+                    <td>
+                      <div class="dropdown float-end">
+                        <a class="text-muted dropdown-toggle font-size-20" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                          <i class="bx bx-dots-horizontal-rounded"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end">
+                          <a class="dropdown-item" (click)="editCar(car.voiture_id)">Edit</a>
+                          <a class="dropdown-item" (click)="deleteCar(car.voiture_id)">Delete</a>
+                        </div>
+                      </div>
+                    </td>
+                    </tr>
+                    <!-- Affichage d'un message si aucune voiture n'est disponible -->
+                    <tr *ngIf="cars.length === 0">
+                      <td colspan="7" class="text-center">
+                        No cars available.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+     <!-- Modal Add Car -->
+  <div class="modal fade" id="addCarModal" tabindex="-1" aria-labelledby="addCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addCarModalLabel">Add Car</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form #carForm="ngForm">
+            <div class="mb-3">
+              <label for="carBrand" class="form-label">Marque</label>
+              <input type="text" class="form-control" id="carBrand" [(ngModel)]="car.marque" name="carBrand" placeholder="Marque">
+            </div>
+            <div class="mb-3">
+              <label for="carModel" class="form-label">Modèle</label>
+              <input type="text" class="form-control" id="carModel" [(ngModel)]="car.modele" name="carModel" placeholder="Modele">
+            </div>
+            <div class="mb-3">
+              <label for="carYear" class="form-label">Year</label>
+              <input type="number" class="form-control" id="carYear" [(ngModel)]="car.annee" name="carYear" placeholder="Year">
+            </div>
+            <div class="mb-3">
+              <label for="carType" class="form-label">Type</label>
+              <input type="text" class="form-control" id="carType" [(ngModel)]="car.type" name="carType" placeholder="Type">
+            </div>
+            <div class="mb-3">
+              <label for="carPriceDay" class="form-label">Price Day</label>
+              <input type="number" class="form-control" id="carPriceDay" [(ngModel)]="car.prix_par_jour" name="carPriceDay" placeholder="Price Day">
+            </div>
+            <div class="mb-3">
+              <label for="carPriceMonth" class="form-label">Price Month</label>
+              <input type="number" class="form-control" id="carPriceMonth" [(ngModel)]="car.prix_par_mois" name="carPriceMonth" placeholder="Price Month">
+            </div>
+            <div class="mb-3">
+              <label for="carPlate" class="form-label">Immatriculation</label>
+              <input type="text" class="form-control" id="carPlate" [(ngModel)]="car.immatriculation" name="carPlate" placeholder="Immatriculation">
+            </div>
+            <div class="mb-3">
+              <label for="carPickUp" class="form-label">Pickup Position</label>
+              <input type="text" class="form-control" id="carPickUp" [(ngModel)]="car.pik_up_position" name="carPickUp" placeholder="Pickup Position">
+            </div>
+            <div class="mb-3">
+              <label for="carDropOff" class="form-label">Drop-off Position</label>
+              <input type="text" class="form-control" id="carDropOff" [(ngModel)]="car.pik_off_position" name="carDropOff" placeholder="Drop-off Position">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveCar()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Edit Car Modal -->
+<div class="modal" id="editCarModal" tabindex="-1" aria-labelledby="editCarModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editCarModalLabel">Edit Car</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="editCarForm">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="carBrand" class="form-label">Brand</label>
+            <input type="text" class="form-control" id="carBrand" [(ngModel)]="selectedCar.marque" name="carBrand" required>
+          </div>
+          <div class="mb-3">
+            <label for="carModel" class="form-label">Model</label>
+            <input type="text" class="form-control" id="carModel" [(ngModel)]="selectedCar.modele" name="carModel" required>
+          </div>
+          <div class="mb-3">
+            <label for="carYear" class="form-label">Year</label>
+            <input type="number" class="form-control" id="carYear" [(ngModel)]="selectedCar.annee" name="carYear" required>
+          </div>
+          <div class="mb-3">
+            <label for="carType" class="form-label">Type</label>
+            <input type="text" class="form-control" id="carType" [(ngModel)]="selectedCar.type" name="carType" required>
+          </div>
+          <div class="mb-3">
+            <label for="carRegistration" class="form-label">Registration</label>
+            <input type="text" class="form-control" id="carRegistration" [(ngModel)]="selectedCar.immatriculation" name="carRegistration" required>
+          </div>
+          <div class="mb-3">
+            <label for="carDailyPrice" class="form-label">Price Per Day</label>
+            <input type="number" class="form-control" id="carDailyPrice" [(ngModel)]="selectedCar.prix_par_jour" name="carDailyPrice" required>
+          </div>
+          <div class="mb-3">
+            <label for="carMonthlyPrice" class="form-label">Price Per Month</label>
+            <input type="number" class="form-control" id="carMonthlyPrice" [(ngModel)]="selectedCar.prix_par_mois" name="carMonthlyPrice" required>
+          </div>
+          <div class="mb-3">
+            <label for="carStatus" class="form-label">Status</label>
+            <select class="form-select" id="carStatus" [(ngModel)]="selectedCar.statut" name="carStatus" required>
+              <option value="true" [selected]="selectedCar.statut === true">Available</option>
+              <option value="false" [selected]="selectedCar.statut === false">Unavailable</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="carPickup" class="form-label">Pick-Up Position</label>
+            <input type="text" class="form-control" id="carPickup" [(ngModel)]="selectedCar.pik_up_position" name="carPickup" required>
+          </div>
+          <div class="mb-3">
+            <label for="carDropOff" class="form-label">Drop-Off Position</label>
+            <input type="text" class="form-control" id="carDropOff" [(ngModel)]="selectedCar.pik_off_position" name="carDropOff" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="saveCarChanges()">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+  </div>
+  

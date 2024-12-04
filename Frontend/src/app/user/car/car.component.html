@@ -1,0 +1,198 @@
+
+
+<section class="hero-wrap hero-wrap-2 " style="background-image: url('assets/images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row no-gutters slider-text  align-items-end justify-content-start">
+      <div class="col-md-9  pb-5">
+        <p class="breadcrumbs"><span class="mr-2"><a routerLink="/home">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Cars <i class="ion-ios-arrow-forward"></i></span></p>
+        <h1 class="mb-3 bread">Choose Your Car</h1>
+      </div>
+    </div>
+  </div>
+</section>
+ <div class="row" id="fs_app">
+
+      <section class="col-12" id="fs_header_bar">
+<!-- Filter -->
+<div class="container-fluid">
+  <div class="row" id="fs_app">
+    <div class="col-md-3" id="filter-container">
+      <section class="col-12" id="fs_header_bar">
+        <div class="row">
+
+          <div class="col-10" id="fs_page_title"> <h4>Filters</h4></div>
+          <br><br>
+        </div>
+      </section>
+
+      <section class="col-12" id="fs_price_body">
+        <div>
+          <span class="heading">By Price</span>
+          <br><br>
+          <div class="line"></div>
+          <div class="line1"></div>
+          <div>
+            <label for="prix-par-jour">Per Day</label>
+            <input
+              id="prix-par-jour"
+              type="number"
+              class="form-control"
+              placeholder="Enter max price per day"
+              [(ngModel)]="filters.prix_par_jour"
+            />
+            <label for="prix-par-mois">Per Month</label>
+            <input
+              id="prix-par-mois"
+              type="number"
+              class="form-control"
+              placeholder="Enter max price per month"
+              [(ngModel)]="filters.prix_par_mois"
+            />
+          </div>
+        </div>
+      </section>
+      
+      <!-- Filtrage par Marque avec input text -->
+      <section class="col-12" id="fs_marque_body">
+        <span class="heading">By Marque</span>
+        <div class="contents">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Enter marque"
+            [(ngModel)]="filters.marque"
+          />
+        </div>
+      </section>
+      
+      <!-- Filtrage par Année avec input text -->
+      <section class="col-12" id="fs_annee_body">
+        <span class="heading">By Année</span>
+        <div class="contents">
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Enter year"
+            [(ngModel)]="filters.annee"
+          />
+        </div>
+      </section>
+      
+      <section class="col-12" id="fs_rating">
+        <span class="heading">By Rating</span>
+        <div class="contents">
+          <ul>
+            <li>
+              <span>
+                <i class="fa fa-star dark"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </span>
+              <span class="text-right"></span>
+            </li>
+            <li>
+              <span>
+                <i class="fa fa-star dark"></i>
+                <i class="fa fa-star dark"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+              </span>
+              <span class="text-right"></span>
+            </li>
+          </ul>
+        </div>
+      </section>
+      
+      <div class="col-12 text-center">
+        <button class="btn btn-primary mt-3" (click)="applyFilters()">Apply Filters</button>
+      </div>
+      
+      
+    </div>
+
+    <div class="col-md-9">
+      <section class="ftco-section">
+        <div class="row justify-content-end mb-4">
+          <div class="col-auto">
+            <label class="mr-2">Price / :</label>
+            <div class="form-check form-check-inline">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="priceOption" 
+                id="pricePerDay" 
+                value="day" 
+                [(ngModel)]="priceOption" 
+              />
+              <label class="form-check-label" for="pricePerDay">Day</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="priceOption" 
+                id="pricePerMonth" 
+                value="month" 
+                [(ngModel)]="priceOption" 
+              />
+              <label class="form-check-label" for="pricePerMonth">Month</label>
+            </div>
+          </div>
+          
+        </div>
+
+        <div *ngIf="noCarsMessage" class="no-cars-message">
+          {{ noCarsMessage }}
+        </div>
+        
+        <div *ngIf="!noCarsMessage && paginatedCars.length > 0">
+          <div class="row">
+            <div class="col-md-4" *ngFor="let car of paginatedCars">
+              <div class="car-wrap rounded">
+                <div class="img rounded d-flex align-items-end" [style.background-image]="'url(' + car.image + ')'"></div>
+                <div class="text">
+                  <h2 class="mb-0">{{ car.name }}</h2>
+                  <div class="d-flex mb-3">
+                    <span class="cat">{{ car.category }}</span>
+                    <p class="price ml-auto">
+                      ${{ priceOption === 'day' ? car.price : car.price2 }}
+                      <span>/{{ priceOption }}</span>
+                    </p>
+                  </div>
+                  <p>Pick-up: {{ car.pik_up_position }}</p>
+                  <p>Drop-off: {{ car.pik_off_position }}</p>
+                  <p class="d-flex mb-0 d-block">
+                    <a href="#" class="btn btn-primary py-2 mr-1">Book now</a>
+                    <a routerLink="/user/det" class="btn btn-secondary py-2 ml-1">Details</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        
+
+        <!-- Pagination -->
+        <div class="row mt-5">
+          <div class="col text-center">
+            <div class="block-27">
+              <ul>
+                <li><a (click)="prevPage()">&lt;</a></li>
+                <li *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="currentPage === (i + 1)">
+                  <a (click)="setPage(i + 1)">{{ i + 1 }}</a>
+                </li>
+                <li><a (click)="nextPage()">&gt;</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
