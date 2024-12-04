@@ -1,22 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const carController = require('../controllers/carController');
+const protect = require('../middleware/authMiddleware');
 
-// Créer une voiture
-router.post('/', carController.createCar);
+router.post('/',protect, carController.uploadImage ,carController.createCar);
 
-// Récupérer toutes les voitures
-router.get('/', carController.getAllCars);
+router.get('/', protect, carController.getAllCars);
 
-// Récupérer une voiture par ID
-router.get('/:voiture_id', carController.getCarById);
+router.get('/:voiture_id',protect, carController.getCarById);
 
-// Mettre à jour une voiture
-router.put('/:voiture_id', carController.updateCar);
+router.put('/:voiture_id',protect, carController.updateCar);
 
-// Supprimer une voiture
-router.delete('/:voiture_id', carController.deleteCar);
+router.delete('/:voiture_id',protect, carController.deleteCar);
 
-router.get('/filters', carController.getCarsWithFilters);
+router.get('/filters', protect, carController.getCarsWithFilters);
 
 module.exports = router;

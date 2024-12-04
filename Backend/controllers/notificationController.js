@@ -1,4 +1,3 @@
-// controllers/notificationController.js
 const Notification = require('../models/notifications');
 // Add a new notification
 exports.addNotification = async (req, res) => {
@@ -26,9 +25,9 @@ exports.markAsRead = async (req, res) => {
 
     // Find the notification by notification_id and update the "read" status to true
     const notification = await Notification.findOneAndUpdate(
-      { notification_id: notification_id }, // Correct way to query with notification_id
-      { read: true }, // Update the read field to true
-      { new: true } // Return the updated notification
+      { notification_id: notification_id },
+      { read: true },
+      { new: true }
     );
 
     if (!notification) {

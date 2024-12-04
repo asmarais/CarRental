@@ -3,7 +3,7 @@ const axios = require('axios')
 const Add =  async (req, res) => {
     const url = "https://developers.flouci.com/api/generate_payment";
     const payload = {
-        "app_token": "3b2804c4-01fa-404e-a0d3-d6092c13bf4f", 
+        "app_token": process.env.FLOUCI_APP, 
         "app_secret": process.env.FLOUCI_SECRET,
         "amount": req.body.amount,
         "accept_card": "true",

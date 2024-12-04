@@ -1,7 +1,0 @@
-/* Classe pour le lien actif */
-.active-link {
-  background-color: #007bff80; /* Couleur de fond différente pour le lien actif */
-  border-radius: 6px;        /* Optionnel : pour un style plus doux */
-  color: rgba(89, 89, 89, 0.753) !important;
-}
-
