@@ -13,7 +13,7 @@ const carSchema = new mongoose.Schema({
   statut: { type: Boolean, default: true },  // true = disponible, false = non disponible
   pik_up_position: { type: String, required: true }, 
   pik_off_position: { type: String, required: true },
-  image: { type: Buffer }
+  image: { type: String}
 });
 
 carSchema.plugin(AutoIncrement, { inc_field: 'voiture_id' });

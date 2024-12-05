@@ -3,7 +3,7 @@ const router = express.Router();
 const carController = require('../controllers/carController');
 const protect = require('../middleware/authMiddleware');
 
-router.post('/',protect, carController.uploadImage ,carController.createCar);
+router.post('/',carController.createCar);
 
 router.get('/', protect, carController.getAllCars);
 

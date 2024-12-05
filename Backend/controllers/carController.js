@@ -1,19 +1,9 @@
 const Car = require('../models/car');
-const multer = require('multer');
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
-
-// Middleware for image upload
-exports.uploadImage = upload.single('image');
 
 // Créer une nouvelle voiture
 exports.createCar = async (req, res) => {
   try {
-    const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position } = req.body;
-    
-// Handle image file from multer
-const image = req.file ? req.file.buffer : null;
+    const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position, image } = req.body;
 
     const newCar = new Car({
       marque,
@@ -40,14 +30,12 @@ const image = req.file ? req.file.buffer : null;
 exports.getAllCars = async (req, res) => {
   try {
     const cars = await Car.find();
-    res.status(200).json(cars.map(car => ({
-      ...car.toObject(),
-      image: car.image ? car.image.toString('base64') : null,
-    })));
+    res.status(200).json(cars);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
+
 
 // Récupérer une voiture par ID
 exports.getCarById = async (req, res) => {
@@ -56,23 +44,17 @@ exports.getCarById = async (req, res) => {
     if (!car) {
       return res.status(404).json({ message: 'Voiture non trouvée' });
     }
-    res.status(200).json({
-      ...car.toObject(),
-      image: car.image ? car.image.toString('base64') : null, // Convert image buffer to Base64
-    });
+    res.status(200).json(car);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
+
 // Mettre à jour une voiture
 exports.updateCar = async (req, res) => {
   try {
     const updateData = { ...req.body };
-
-    if (req.file) {
-      updateData.image = req.file.buffer;
-    }
 
     const updatedCar = await Car.findOneAndUpdate(
       { voiture_id: req.params.voiture_id },
@@ -84,15 +66,13 @@ exports.updateCar = async (req, res) => {
     }
     res.status(200).json({
       message: 'Voiture mise à jour',
-      car: {
-        ...updatedCar.toObject(),
-        image: updatedCar.image ? updatedCar.image.toString('base64') : null, // Convert updated image to Base64
-      },
+      car: updatedCar,
     });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
+
 
 // Supprimer une voiture
 exports.deleteCar = async (req, res) => {
@@ -114,30 +94,30 @@ exports.getCarsWithFilters = async (req, res) => {
       voiture_id, marque, type, statut, prix_par_mois, prix_par_jour, modele, annee 
     } = req.query;
 
-    // Filter for cars
+    // Build the filters object
     const carFilters = {};
 
     if (voiture_id) carFilters.voiture_id = voiture_id;
-    if (marque) carFilters.marque = { $regex: marque, $options: 'i' }; 
-    if (type) carFilters.type = { $regex: type, $options: 'i' };
-    if (modele) carFilters.modele = { $regex: modele, $options: 'i' };
-    if (annee) carFilters.annee = Number(annee); 
+    if (marque) carFilters.marque = { $regex: marque, $options: 'i' }; // Case-insensitive
+    if (type) carFilters.type = { $regex: type, $options: 'i' }; // Case-insensitive
+    if (modele) carFilters.modele = { $regex: modele, $options: 'i' }; // Case-insensitive
+    if (annee) carFilters.annee = Number(annee); // Convert to number
 
-    if (statut !== undefined) carFilters.statut = statut === 'true'; 
-    if (prix_par_mois) carFilters.prix_par_mois = { $gte: Number(prix_par_mois) }; 
-    if (prix_par_jour) carFilters.prix_par_jour = { $gte: Number(prix_par_jour) };
+    if (statut !== undefined) carFilters.statut = statut === 'true'; // Convert to boolean
+    if (prix_par_mois) carFilters.prix_par_mois = { $gte: Number(prix_par_mois) }; // Minimum value
+    if (prix_par_jour) carFilters.prix_par_jour = { $gte: Number(prix_par_jour) }; // Minimum value
 
+    // Fetch the cars from the database
     const cars = await Car.find(carFilters);
 
-    if (cars.length === 0) {
+    if (!cars || cars.length === 0) {
       return res.status(404).json({ error: 'No cars found with the given filters' });
     }
 
-    res.status(200).json(cars.map(car => ({
-      ...car.toObject(),
-      image: car.image ? car.image.toString('base64') : null,
-    })));
+    // Return the cars directly
+    res.status(200).json(cars.map(car => car.toObject()));
   } catch (err) {
     res.status(500).json({ error: 'Error fetching cars', details: err.message });
   }
 };
+
