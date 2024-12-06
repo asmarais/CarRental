@@ -3,7 +3,7 @@ const Car = require('../models/car');
 // Créer une nouvelle voiture
 exports.createCar = async (req, res) => {
   try {
-    const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position } = req.body;
+    const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position,img_user,img_car,rate } = req.body;
     
     const newCar = new Car({
       marque,
@@ -15,7 +15,10 @@ exports.createCar = async (req, res) => {
       prix_par_jour,
       statut,
       pik_up_position,
-      pik_off_position
+      pik_off_position,
+      img_user,
+      img_car,
+      rate
     });
 
     await newCar.save();
@@ -80,7 +83,7 @@ exports.deleteCar = async (req, res) => {
 exports.getCarsWithFilters = async (req, res) => {
     try {
       const { 
-        voiture_id, marque, type, statut, prix_par_mois, prix_par_jour, agence_id, modele, annee 
+        voiture_id, marque, type, statut, prix_par_mois, prix_par_jour, agence_id, modele, annee,rate 
       } = req.query;
   
       // Filter for cars
@@ -95,6 +98,9 @@ exports.getCarsWithFilters = async (req, res) => {
       if (statut !== undefined) carFilters.statut = statut === 'true'; 
       if (prix_par_mois) carFilters.prix_par_mois = { $gte: Number(prix_par_mois) }; 
       if (prix_par_jour) carFilters.prix_par_jour = { $gte: Number(prix_par_jour) };
+      if (rate) carFilters.rate = { $gte: Number(rate) };
+
+
       //if (agence_id) carFilters.agence_id = Number(agence_id);
   
       // Fetch cars based on carFilters

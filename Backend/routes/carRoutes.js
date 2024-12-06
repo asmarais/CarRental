@@ -7,6 +7,7 @@ router.post('/', carController.createCar);
 
 // Récupérer toutes les voitures
 router.get('/', carController.getAllCars);
+router.get('/filters', carController.getCarsWithFilters);
 
 // Récupérer une voiture par ID
 router.get('/:voiture_id', carController.getCarById);
@@ -17,6 +18,5 @@ router.put('/:voiture_id', carController.updateCar);
 // Supprimer une voiture
 router.delete('/:voiture_id', carController.deleteCar);
 
-router.get('/filters', carController.getCarsWithFilters);
 
 module.exports = router;
