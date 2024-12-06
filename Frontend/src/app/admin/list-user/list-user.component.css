@@ -17,6 +17,10 @@ h5{
   font-weight: 600;
 
 }
+.fa {
+  cursor: pointer;
+}
+
 .user-list tbody td .user-subhead {
   font-size: 0.875em;
   font-style: italic;

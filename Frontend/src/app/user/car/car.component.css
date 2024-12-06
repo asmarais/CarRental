@@ -21,6 +21,14 @@
 	border-bottom: 2px solid #eee;
 }
 
+.no-cars-message {
+	text-align: center;
+	font-size: 1.2em;
+	color: #555;
+	margin-top: 20px;
+  }
+  
+
 #fs_header_bar{
 	padding-top: 25px;
 	padding-bottom: 0;

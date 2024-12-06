@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { Subject, debounceTime } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-maps-a',
@@ -32,9 +33,9 @@ export class MapsAComponent implements OnInit {
   });
 
   // Liste des voitures avec leurs positions
-  cars: { name: string; position: { lat: number; lng: number }; pik_up_position: string; }[] = [];
+  cars: { voiture_id: number    ;marque: string; position: { lat: number; lng: number }; pik_up_position: string; }[] = [];
 
-  selectedCar: { name: string; position: { lat: number; lng: number } } | null = null;
+  selectedCar: {voiture_id: number; marque: string; position: { lat: number; lng: number } } | null = null;
   selectedCarName: string = '';
 
   ngOnInit(): void {
@@ -63,7 +64,7 @@ export class MapsAComponent implements OnInit {
 
   // Fetch car data from the backend
   fetchCars() {
-    fetch('http://localhost:5000/api/voitures/cars')
+    fetch('http://localhost:5000/api/voitures')
       .then(response => response.json())
       .then(data => {
         this.cars = data;
@@ -73,10 +74,12 @@ export class MapsAComponent implements OnInit {
       })
       .catch(error => console.error('Error fetching car data:', error));
   }
+  
 
   // Geocode the car's pick-up position (pik_up_position)
-  geocodeCarLocation(car: { name: string; pik_up_position: string; }) {
-    const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${car.pik_up_position}`;
+  geocodeCarLocation(car: { marque: string; pik_up_position: string; voiture_id: number; }) {
+    const encodedAddress = encodeURIComponent(car.pik_up_position); // URL encode the address
+    const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodedAddress}`;
     
     fetch(geocodeUrl)
       .then(response => response.json())
@@ -84,18 +87,22 @@ export class MapsAComponent implements OnInit {
         if (data && data.length > 0) {
           const lat = parseFloat(data[0].lat);
           const lon = parseFloat(data[0].lon);
-          
-          // Add marker to map
+  
+          // Ensure voiture_id is passed to addCarMarker
           this.addCarMarker({ ...car, position: { lat, lng: lon } });
+        } else {
+          console.error(`Failed to geocode location for ${car.pik_up_position}. Skipping...`);
         }
       })
       .catch(error => console.error('Error geocoding car location:', error));
   }
+  
+  
 
-  addCarMarker(car: { name: string; position: { lat: number; lng: number } }) {
+  addCarMarker(car: {voiture_id: number ;marque: string; position: { lat: number; lng: number } }) {
     L.marker([car.position.lat, car.position.lng], { icon: this.carIcon })
       .addTo(this.map)
-      .bindPopup(car.name)
+      .bindPopup(car.marque)
       // Ajouter un événement de clic sur le marqueur de voiture
       .on('click', () => {
         this.selectCarFromMap(car);
@@ -104,23 +111,23 @@ export class MapsAComponent implements OnInit {
 
   onCarSelect(event: any) {
     const selectedCarName = event.target.value;
-    this.selectedCar = this.cars.find(car => car.name === selectedCarName) || null;
+    this.selectedCar = this.cars.find(car => car.marque === selectedCarName) || null;
 
     if (this.selectedCar) {
       this.map.setView([this.selectedCar.position.lat, this.selectedCar.position.lng], 14);
       L.marker([this.selectedCar.position.lat, this.selectedCar.position.lng], { icon: this.carIcon })
         .addTo(this.map)
-        .bindPopup(this.selectedCar.name)
+        .bindPopup(this.selectedCar.marque)
         .openPopup();
       this.handleMapClick(this.selectedCar.position.lat, this.selectedCar.position.lng);
     }
   }
 
-  selectCarFromMap(car: { name: string; position: { lat: number; lng: number } }) {
+  selectCarFromMap(car: { voiture_id: number;marque: string; position: { lat: number; lng: number } }) {
     this.selectedCar = car;
-    this.selectedCarName = car.name;
+    this.selectedCarName = car.marque;
     this.map.setView([car.position.lat, car.position.lng], 14);
-    this.updateCarSelectionInDropdown(car.name);
+    this.updateCarSelectionInDropdown(car.marque);
     this.updateCarLocation(car.position);
   }
 
@@ -169,24 +176,57 @@ export class MapsAComponent implements OnInit {
   }
 
   confirmChangePosition() {
-    if (this.newPosition && this.selectedCar) {
-      this.selectedCar.position = this.newPosition;
-      this.showConfirmButton = false;
-      this.newPosition = null;
-
-      this.map.setView([this.selectedCar.position.lat, this.selectedCar.position.lng], 14);
-
-      if (this.dropOffMarker) {
-        this.dropOffMarker.remove();
-        this.dropOffMarker = null;
-      }
-
-      L.marker([this.selectedCar.position.lat, this.selectedCar.position.lng], { icon: this.carIcon })
-        .addTo(this.map)
-        .bindPopup('New location for ' + this.selectedCar.name)
-        .openPopup();
+    if (!this.newPosition || !this.selectedCar) {
+      console.warn('Aucune position ou voiture sélectionnée.');
+      console.log('Selected car:', this.selectedCar);
+      console.log('New position:', this.newPosition);
+      return;
     }
+  
+    // Proceed with the update as expected
+    const updatedCarData = {
+      marque: this.selectedCar.marque,
+      pik_up_position: this.OfftLocationAddress,
+      position: this.newPosition
+    };
+  
+    const carId = this.selectedCar.voiture_id;
+  
+    this.http
+      .put<{ success: boolean; message: string }>(
+        `http://localhost:5000/api/voitures/${carId}`,
+        updatedCarData
+      )
+      .subscribe(
+        response => {
+          console.log('Position mise à jour avec succès :', response);
+  
+          this.showConfirmButton = false;
+          this.newPosition = null;
+  
+          if (this.selectedCar?.position) {
+            this.map.setView([this.selectedCar.position.lat, this.selectedCar.position.lng], 14);
+  
+            if (this.dropOffMarker) {
+              this.dropOffMarker.remove();
+              this.dropOffMarker = null;
+            }
+  
+            L.marker([this.selectedCar.position.lat, this.selectedCar.position.lng], { icon: this.carIcon })
+              .addTo(this.map)
+              .bindPopup('Nouvelle position pour ' + (this.selectedCar?.marque || 'Car'))
+              .openPopup();
+          } else {
+            console.warn('No car selected or selected car position is missing.');
+          }
+        },
+        error => {
+          console.error('Erreur lors de la mise à jour de la position :', error);
+        }
+      );
   }
+  
+  
 
   activateDropOffLocationSelection() {
     this.mapClickMode = true;
@@ -232,7 +272,7 @@ export class MapsAComponent implements OnInit {
 
   private searchSubjectOff = new Subject<string>();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.searchSubjectOff.pipe(debounceTime(1000)).subscribe(query => {
       if (query.length > 0) {
         this.geocodeOff(query);

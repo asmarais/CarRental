@@ -1,4 +1,3 @@
-// controllers/reservationController.js
 const Reservation = require('../models/reservation');
 
 // Créer une nouvelle réservation
@@ -127,7 +126,7 @@ exports.getReservationsWithFilters = async (req, res) => {
     if (voiture_id) reservationFilters.voiture_id = Number(voiture_id);
 
     // Filter for status (true/false)
-    if (statut !== undefined) reservationFilters.statut = statut === 'true';  // true for active, false for canceled
+    if (statut !== undefined) reservationFilters.statut = statut === 'true';
 
     // Filter for date_debut if provided
     if (date_debut) {

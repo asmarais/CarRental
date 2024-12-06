@@ -29,62 +29,56 @@
       <section class="col-12" id="fs_price_body">
         <div>
           <span class="heading">By Price</span>
-          <br> <br>
+          <br><br>
           <div class="line"></div>
           <div class="line1"></div>
           <div>
-            <ul>
-              <li>$25</li>
-              <li>$50</li>
-            </ul>
+            <label for="prix-par-jour">Per Day</label>
+            <input
+              id="prix-par-jour"
+              type="number"
+              class="form-control"
+              placeholder="Enter max price per day"
+              [(ngModel)]="filters.prix_par_jour"
+            />
+            <label for="prix-par-mois">Per Month</label>
+            <input
+              id="prix-par-mois"
+              type="number"
+              class="form-control"
+              placeholder="Enter max price per month"
+              [(ngModel)]="filters.prix_par_mois"
+            />
           </div>
         </div>
       </section>
-
-      <section class="col-12" id="fs_distance_body">
-        <span class="heading">By Distance</span>
+      
+      <!-- Filtrage par Marque avec input text -->
+      <section class="col-12" id="fs_marque_body">
+        <span class="heading">By Marque</span>
         <div class="contents">
-          <ul>
-            <li>
-              <span>From 1 km to 3 km</span>
-              <span class="text-right"></span>
-            </li>
-            <li class="active">
-              <span>From 4 km to 7 km</span>
-              <span class="text-right">
-                <i class="fa fa-check"></i>
-              </span>
-            </li>
-            <li>
-              <span>From 8 km to 10 km</span>
-              <span class="text-right"></span>
-            </li>
-          </ul>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Enter marque"
+            [(ngModel)]="filters.marque"
+          />
         </div>
       </section>
-
-      <section class="col-12" id="fs_time_body">
-        <span class="heading">By Time</span>
+      
+      <!-- Filtrage par Année avec input text -->
+      <section class="col-12" id="fs_annee_body">
+        <span class="heading">By Année</span>
         <div class="contents">
-          <ul>
-            <li>
-              <span>Less than 30 Min</span>
-              <span class="text-right"></span>
-            </li>
-            <li>
-              <span>30 Min - 45 Min</span>
-              <span class="text-right"></span>
-            </li>
-            <li class="active">
-              <span>45 Min - 55 Min</span>
-              <span class="text-right">
-                <i class="fa fa-check"></i>
-              </span>
-            </li>
-          </ul>
+          <input
+            type="number"
+            class="form-control"
+            placeholder="Enter year"
+            [(ngModel)]="filters.annee"
+          />
         </div>
       </section>
-
+      
       <section class="col-12" id="fs_rating">
         <span class="heading">By Rating</span>
         <div class="contents">
@@ -112,42 +106,77 @@
           </ul>
         </div>
       </section>
+      
+      <div class="col-12 text-center">
+        <button class="btn btn-primary mt-3" (click)="applyFilters()">Apply Filters</button>
+      </div>
+      
+      
     </div>
 
     <div class="col-md-9">
       <section class="ftco-section">
         <div class="row justify-content-end mb-4">
           <div class="col-auto">
-            <label class="mr-2">Price /  :</label>
+            <label class="mr-2">Price / :</label>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="priceOption" id="pricePerDay" value="day" checked>
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="priceOption" 
+                id="pricePerDay" 
+                value="day" 
+                [(ngModel)]="priceOption" 
+              />
               <label class="form-check-label" for="pricePerDay">Day</label>
             </div>
             <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="priceOption" id="pricePerHour" value="hour">
-              <label class="form-check-label" for="pricePerHour">Hour</label>
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                name="priceOption" 
+                id="pricePerMonth" 
+                value="month" 
+                [(ngModel)]="priceOption" 
+              />
+              <label class="form-check-label" for="pricePerMonth">Month</label>
             </div>
           </div>
+          
         </div>
 
-        <div class="row">
-          <div class="col-md-4" *ngFor="let car of paginatedCars">
-            <div class="car-wrap rounded">
-              <div class="img rounded d-flex align-items-end" [style.background-image]="'url(' + car.image + ')'"></div>
-              <div class="text">
-                <h2 class="mb-0"><a href="car-single.html">{{ car.name }}</a></h2>
-                <div class="d-flex mb-3">
-                  <span class="cat">{{ car.category }}</span>
-                  <p class="price ml-auto">${{ car.price }} <span>/day</span></p>
+        <div *ngIf="noCarsMessage" class="no-cars-message">
+          {{ noCarsMessage }}
+        </div>
+        
+        <div *ngIf="!noCarsMessage && paginatedCars.length > 0">
+          <div class="row">
+            <div class="col-md-4" *ngFor="let car of paginatedCars">
+              <div class="car-wrap rounded">
+                <div class="img rounded d-flex align-items-end" [style.background-image]="'url(' + car.image + ')'"></div>
+                <div class="text">
+                  <h2 class="mb-0">{{ car.name }}</h2>
+                  <div class="d-flex mb-3">
+                    <span class="cat">{{ car.category }}</span>
+                    <p class="price ml-auto">
+                      ${{ priceOption === 'day' ? car.price : car.price2 }}
+                      <span>/{{ priceOption }}</span>
+                    </p>
+                  </div>
+                  <p>Pick-up: {{ car.pik_up_position }}</p>
+                  <p>Drop-off: {{ car.pik_off_position }}</p>
+                  <p class="d-flex mb-0 d-block">
+                    <a href="#" class="btn btn-primary py-2 mr-1">Book now</a>
+                    <a routerLink="/user/det" class="btn btn-secondary py-2 ml-1">Details</a>
+                  </p>
                 </div>
-                <p class="d-flex mb-0 d-block">
-                  <a href="#" class="btn btn-primary py-2 mr-1">Book now</a>
-                  <a routerLink="/user/det" class="btn btn-secondary py-2 ml-1">Details</a>
-                </p>
               </div>
             </div>
           </div>
         </div>
+        
+        
+        
 
         <!-- Pagination -->
         <div class="row mt-5">

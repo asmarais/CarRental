@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   frontend:
     build:
@@ -8,14 +9,20 @@ services:
     depends_on:
       - backend
 
-
   backend:
     build:
       context: ./Backend
     ports:
       - "5000:5000"
-    env_file:
-      - ./Backend/.env
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/carRental
+      - JWT_SECRET=your_jwt_secret_key
+      - JWT_EXPIRES_IN=1d
+      - EMAIL_USER=rais.asma99@gmail.com
+      - APP_PASSWORD=jznlipcscovlaspt
+      - PORT=5000
+      - FLOUCI_SECRET=69205a1b-3cde-41ec-b4f2-c68bd4f95764
+      - FLOUCI_APP=3b2804c4-01fa-404e-a0d3-d6092c13bf4f
     depends_on:
       - mongo
 
@@ -24,7 +31,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db 
+      - mongo-data:/data/db
 
 volumes:
   mongo-data:

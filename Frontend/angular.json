@@ -76,7 +76,7 @@
             },
             "development": {
               "browserTarget": "CarRent:build:development",
-              "host": "0.0.0.0" 
+              "host": "0.0.0.0"
             }
           },
           "defaultConfiguration": "development"

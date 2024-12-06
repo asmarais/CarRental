@@ -19,6 +19,8 @@ export class MapComponent implements OnInit {
   routeLayer!: L.Polyline;
   dropOffLocation: string = '';
   circle!: L.Circle;
+  dropOffCircle!: L.Circle;
+  inValidMessage: string = '';
   mapClickMode = false;
   currentLocationAddress: string = '';
   OfftLocationAddress: string = '';
@@ -33,16 +35,7 @@ export class MapComponent implements OnInit {
     iconAnchor: [16, 32],
     popupAnchor: [0, -32]
   });
-  cars = [
-    { name: 'Car 1', position: { lat: 35.679, lng: 10.124 }, image: 'https://via.placeholder.com/100x50', price: '$50/day', color: 'Red' },
-    { name: 'Car 2', position: { lat: 35.677, lng: 10.122 }, image: 'https://via.placeholder.com/100x50', price: '$60/day', color: 'Blue' },
-    { name: 'Car 3', position: { lat: 35.6785, lng: 10.125 }, image: 'https://via.placeholder.com/100x50', price: '$55/day', color: 'Green' },
-    { name: 'Car 4', position: { lat: 35.6782, lng: 10.1215 }, image: 'https://via.placeholder.com/100x50', price: '$70/day', color: 'Yellow' },
-    { name: 'Car 5', position: { lat: 36.837511, lng: 10.151681 }, image: 'https://via.placeholder.com/100x50', price: '$70/day', color: 'Yellow' },
-    { name: 'Car in Rades', position: { lat: 36.7489, lng: 10.177 } },  // Voiture à Rades
-    { name: 'Car in Laouina', position: { lat: 36.835, lng: 10.209 } }, // Voiture à Laouina
-    { name: 'Car in Marsa', position: { lat: 36.8833, lng: 10.311 } }
-  ];
+  cars: any[] = [];
 
   userIcon = L.icon({
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/219/219964.png',
@@ -69,6 +62,7 @@ export class MapComponent implements OnInit {
     window.scrollTo(0, 0);
     this.getUserLocation();
     (window as any).selectCar = this.displayRouteToCar.bind(this);
+    this.fetchCars();
   }
 
   getUserLocation() {
@@ -98,11 +92,13 @@ export class MapComponent implements OnInit {
 
   }
 
-  initMap() {
+  async initMap() {
     this.map = L.map('map').setView([this.userLocation.lat, this.userLocation.lng], 13);
-
+  
+    // Add the tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 20 }).addTo(this.map);
-
+  
+    // Add a circle around the user location
     this.circle = L.circle([this.userLocation.lat, this.userLocation.lng], {
       radius: 1000,
       color: 'RED',
@@ -110,23 +106,124 @@ export class MapComponent implements OnInit {
       fillOpacity: 0.2,
     }).addTo(this.map);
     this.circle.getElement()?.setAttribute('style', 'pointer-events: none;');
-
+  
+    // Add a marker for the user location
     L.marker([this.userLocation.lat, this.userLocation.lng], { icon: this.userIcon })
       .addTo(this.map)
       .bindPopup('Your location')
       .openPopup();
+  
+    // Wait for all the car markers and drop-off locations to be added
+    for (const car of this.cars) {
+      await this.addCarMarker(car);  // Assuming addCarMarker is an async function
+  
+      // Add a marker for the drop-off location
+      try {
+        const dropOffLatLng = await this.geocodeAddress(car.pik_off_position);
+        console.log(dropOffLatLng);
+  
+        // Create a yellow circle of 500m radius at the drop-off location
+        const dropOffCircle = L.circle([dropOffLatLng.lat, dropOffLatLng.lng], {
+          radius: 500, // 500 meters
+          color: 'yellow',
+          fillColor: 'yellow',
+          fillOpacity: 0.2,
+        }).addTo(this.map);
+        dropOffCircle.getElement()?.setAttribute('style', 'pointer-events: none;');
+  
+        const labelText = 'Drop-off Zone';
+  
+        // Create a DivIcon to display text
+        const dropOffLabel = L.divIcon({
+          className: 'circle-label',  // CSS class for styling the text
+          html: `<div style="color:black; cursor: none; pointer-events: none;" class="drop-off-text">${labelText}</div>`,
+          iconSize: [75, 0],  // Text size
+          iconAnchor: [40, 10], // Anchor the text to the center of the circle
+        });
+  
+        // Add the icon (marker with text) to the map
+        L.marker([dropOffLatLng.lat, dropOffLatLng.lng], { icon: dropOffLabel }).addTo(this.map);
+      } catch (error) {
+        console.error('Error geocoding drop-off location:', error);
+      }
+    }
+  
+    // Event listener for map clicks
+    this.map.on('click', (e: L.LeafletMouseEvent) => {
+      if (this.mapClickMode) {
+        this.mapClickMode = false;
+        document.getElementById('map')?.classList.remove('map-select-cursor');
+        this.handleMapClick(e.latlng.lat, e.latlng.lng);
+      }
+    });
+  }
+  
 
-      this.cars.forEach(car => {
-        this.addCarMarker(car);
-      });
+  fetchCars() {
+    this.http.get('http://localhost:5000/api/voitures').subscribe(
+      (response: any) => {
+        this.cars = response;  // Assuming the response is an array of cars
+        this.displayCarMarkers();  // Display cars on the map after fetching
+      },
+      (error) => {
+        console.error('Error fetching cars:', error);
+      }
+    );
+  }
 
-      this.map.on('click', (e: L.LeafletMouseEvent) => {
-        if (this.mapClickMode) {
-          this.mapClickMode = false;
-          document.getElementById('map')?.classList.remove('map-select-cursor');
-          this.handleMapClick(e.latlng.lat, e.latlng.lng);
+   // Function to convert address to lat/lng using Nominatim API
+   geocodeAddress(address: string): Promise<{ lat: number, lng: number }> {
+    const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+    return fetch(geocodeUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.length > 0) {
+          return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+        } else {
+          throw new Error('Address not found');
         }
+      })
+      .catch((error) => {
+        console.error('Error geocoding address:', error);
+        return { lat: 0, lng: 0 };  // Default to 0,0 if geocoding fails
       });
+  }
+
+  // Function to display car markers on the map
+  displayCarMarkers() {
+    this.cars.forEach((car) => {
+      this.geocodeAddress(car.pik_up_position).then((coords) => {
+        const popupContent = `
+          <div>
+            <p><strong>Model:</strong> ${car.modele}</p>
+            <p><strong>Price:</strong> $${car.prix_par_jour}/day</p>
+            <p><strong>Location:</strong> ${car.pik_up_position}</p>
+            <button onclick="window.selectCar(${coords.lat}, ${coords.lng})">Select Car</button>
+          </div>
+        `;
+
+        L.marker([coords.lat, coords.lng], { icon: this.carIcon })
+          .addTo(this.map)
+          .bindPopup(popupContent);
+      });
+    });
+  }
+
+  
+
+  // Example method to handle car selection
+  displayRouteToCar(lat: number, lng: number) {
+    const routeUrl = `https://router.project-osrm.org/route/v1/driving/${this.userLocation.lng},${this.userLocation.lat};${lng},${lat}?overview=full&geometries=geojson`;
+    fetch(routeUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data && data.routes && data.routes.length > 0) {
+          const route = data.routes[0].geometry.coordinates;
+          const latLngs = route.map((point: [number, number]) => [point[1], point[0]]);
+          L.polyline(latLngs, { color: 'blue', weight: 5 }).addTo(this.map);
+        }
+      })
+      .catch(error => console.error('Error fetching route data:', error));
   }
 
 
@@ -165,28 +262,7 @@ export class MapComponent implements OnInit {
     this.noCarsMessage = nearbyCars.length === 0 ? 'No cars within 1 km around you' : '';
   }
 
-  displayRouteToCar(lat: number, lng: number) {
-    const routeUrl = `https://router.project-osrm.org/route/v1/driving/${this.userLocation.lng},${this.userLocation.lat};${lng},${lat}?overview=full&geometries=geojson`;
-    this.selectedCarPosition = { lat, lng }; // Save the car's position
-
-    fetch(routeUrl)
-      .then(response => response.json())
-      .then(data => {
-        if (data && data.routes && data.routes.length > 0) {
-          const route = data.routes[0].geometry.coordinates;
-          const latLngs = route.map((point: [number, number]) => [point[1], point[0]]);
-
-          if (this.routeLayer) {
-            this.routeLayer.remove();
-          }
-
-          this.routeLayer = L.polyline(latLngs, { color: 'blue', weight: 5 }).addTo(this.map);
-
-          this.map.fitBounds(this.routeLayer.getBounds());
-        }
-      })
-      .catch(error => console.error('Error fetching route data:', error));
-  }
+  
   cancelCarSelection(){
     if (this.routeLayer) {
       this.routeLayer.remove();
@@ -345,13 +421,59 @@ export class MapComponent implements OnInit {
         .addTo(this.map)
         .bindPopup('Drop-Off Location')
         .openPopup();
+
+        // Vérifiez si la position choisie est dans le cercle
+      this.checkDropOffLocation({ lat, lng });
     });
   }
+
+  checkDropOffLocation(selectedLocation: { lat: number, lng: number }) {
+    // Définir un rayon de 500m (0.5 km)
+    const radius = 0.5; // en kilomètres
+
+
+    // Vérifier si la position choisie par l'utilisateur est dans un des cercles de dépôt des voitures
+    let isLocationValid = false;
+
+
+    for (let car of this.cars) {
+      // Position de dépôt de la voiture
+      const dropOffLatLng = car.pik_off_position;
+
+
+      // Calculer la distance entre la position choisie et la position de dépôt de la voiture
+      const distance = this.calculateDistance(
+        selectedLocation.lat,
+        selectedLocation.lng,
+        dropOffLatLng.lat,
+        dropOffLatLng.lng
+      );
+
+
+      // Vérifier si la position choisie est à l'intérieur du cercle de 500m autour de la zone de dépôt de la voiture
+      if (distance <= radius) {
+        isLocationValid = true;
+        break; // Si une voiture correspond, on arrête la boucle
+      }
+    }
+
+
+    if (isLocationValid) {
+      console.log("La position choisie est valide !");
+      this.inValidMessage ="";
+      // Continuer le processus, par exemple, afficher les informations de réservation
+    } else {
+      this.inValidMessage =" The chosen location is not in a valid drop-off zone.";
+      this.cancelDropOffLocationSelection();
+    }
+  }
+
 
   activateDropOffLocationSelection() {
     this.mapClickMode = true;
     document.getElementById('map')?.classList.add('map-select-cursor');
   }
+
 
 
 // Close the map mode on pressing 'Escape'
@@ -361,11 +483,15 @@ onEscape(event: KeyboardEvent) {
     this.cancelDropOffLocationSelection();
   }
 }
+
 cancelDropOffLocationSelection() {
   this.mapClickMode = false;
   document.getElementById('map')?.classList.remove('map-select-cursor');
   this.resetDropOffLocation(); // Ensures that any existing marker is removed
+
+
 }
+
 
 resetDropOffLocation() {
 

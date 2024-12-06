@@ -4,7 +4,7 @@
     <div class="row no-gutters main-row" >
       <!-- Formulaire de réservation (colonne gauche) -->
       <div class="col-md-3 booking-column" >
-        <form action="#" class="request-form " #reservationForm="ngForm" (ngSubmit)="submitReservation(reservationForm)">
+        <form action="#" class="request-form " #reservationForm="ngForm" >
           <h2>Make your trip</h2>
           <div *ngIf="noCarsMessage" class="alert alert-danger mt-3 text-center">
             {{ noCarsMessage }}
@@ -12,7 +12,7 @@
           <div class="form-group position-relative">
             <label for="pickup-location" class="label">1 / &nbsp; Pick-up location <small>&nbsp;&nbsp; if not your current location</small> </label>
             <div class="input-group mb-2">
-            <input type="text" id="pickup-location" class="form-control" [value]="currentLocationAddress" [(ngModel)]="pickupLocation" name="pickupLocation" (input)="onSearch($event)" placeholder="City, Airport, Station, etc">
+            <input type="text" id="pickup-location" class="form-control" [value]="currentLocationAddress"  name="pickupLocation" (input)="onSearch($event)" placeholder="City, Airport, Station, etc">
             <div class="input-group-append ">
               <span
                     class="input-group-text choose-on-map-icon"
@@ -57,17 +57,17 @@
           <div class="d-flex">
             <div class="form-group mr-2">
               <label for="book_pick_date" class="label">Pick-up date</label>
-              <input type="text" id="book_pick_date" class="form-control" placeholder="Date" [(ngModel)]="pickupDate" name="pickupDate">
+              <input type="text" id="book_pick_date" class="form-control" placeholder="Date"  name="pickupDate">
             </div>
             <div class="form-group ml-2">
               <label for="book_off_date" class="label">Drop-off date</label>
-              <input type="text" id="book_off_date" class="form-control" placeholder="Date" [(ngModel)]="dropOffDate" name="dropOffDate">
+              <input type="text" id="book_off_date" class="form-control" placeholder="Date"  name="dropOffDate">
             </div>
           </div>
 
           <div class="form-group position-relative">
             <label for="time_pick" class="label">Pick-up time</label>
-            <input type="text" id="time_pick" class="form-control" placeholder="Time" [(ngModel)]="pickupTime" name="pickupTime">
+            <input type="text" id="time_pick" class="form-control" placeholder="Time"  name="pickupTime">
           </div>
         </div>
           <div class="form-group position-relative">

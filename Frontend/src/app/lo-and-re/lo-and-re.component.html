@@ -46,7 +46,7 @@
          </div>
  
          <a href="#" class="login__forgot">Forgot your password?</a>
-         <button type="submit" class="login__button" [disabled]="loginForm.invalid">Login</button>
+         <button type="submit" class="login__button" >Login</button>
        </form>
  
        <p class="login__switch">
@@ -100,9 +100,15 @@
              <label for="address" class="login__label">Address</label>
              <i class="ri-map-pin-fill login__icon"></i>
            </div>
+
+           <div class="login__box">
+            <input type="text" id="cin" formControlName="cin" required placeholder=" " class="login__input">
+            <label for="cin" class="login__label">CIN</label>
+            <i class="ri-id-card-fill login__icon"></i>
+          </div>          
          </div>
  
-         <button type="submit" class="login__button" [disabled]="signupForm.invalid">Create Account</button>
+         <button type="submit" class="login__button">Create Account</button>
        </form>
  
        <p class="login__switch">

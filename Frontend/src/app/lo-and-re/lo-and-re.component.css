@@ -329,10 +329,6 @@ img {
   font-size: 1rem;
 }
 
-.login__button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
 
 .login__switch {
   text-align: center;

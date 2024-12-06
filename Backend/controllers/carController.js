@@ -1,10 +1,11 @@
-// controllers/carController.js
 const Car = require('../models/car');
+
 // Créer une nouvelle voiture
 exports.createCar = async (req, res) => {
   try {
     const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position,img_user,img_car,rate } = req.body;
     
+
     const newCar = new Car({
       marque,
       annee,
@@ -19,6 +20,7 @@ exports.createCar = async (req, res) => {
       img_user,
       img_car,
       rate
+
     });
 
     await newCar.save();
@@ -38,6 +40,7 @@ exports.getAllCars = async (req, res) => {
   }
 };
 
+
 // Récupérer une voiture par ID
 exports.getCarById = async (req, res) => {
   try {
@@ -51,22 +54,29 @@ exports.getCarById = async (req, res) => {
   }
 };
 
+
 // Mettre à jour une voiture
 exports.updateCar = async (req, res) => {
   try {
+    const updateData = { ...req.body };
+
     const updatedCar = await Car.findOneAndUpdate(
       { voiture_id: req.params.voiture_id },
-      req.body,
+      updateData,
       { new: true }
     );
     if (!updatedCar) {
       return res.status(404).json({ message: 'Voiture non trouvée' });
     }
-    res.status(200).json({ message: 'Voiture mise à jour', car: updatedCar });
+    res.status(200).json({
+      message: 'Voiture mise à jour',
+      car: updatedCar,
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
+
 
 // Supprimer une voiture
 exports.deleteCar = async (req, res) => {
@@ -80,6 +90,8 @@ exports.deleteCar = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+// Récupérer les voitures avec des filtres
 exports.getCarsWithFilters = async (req, res) => {
     try {
       const { 
@@ -113,6 +125,9 @@ exports.getCarsWithFilters = async (req, res) => {
       res.status(200).json({ cars });
     } catch (err) {
       res.status(500).json({ error: 'Error fetching cars', details: err.message });
+
     }
-  };
-  
+
+
+};
+

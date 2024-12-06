@@ -1,20 +1,19 @@
 <div class="content-body">
   <div class="container-fluid">
     <div class="row">
+      <!-- Sélection de la voiture -->
       <div class="col-md-12">
         <label for="carSelect">Sélectionner une voiture</label>
-
-        <!-- Sélection de la voiture -->
         <select id="carSelect" [(ngModel)]="selectedCarName" class="form-control mb-3" (change)="onCarSelect($event)">
-          <option value="" disabled selected>Select Car</option>  <!-- Option par défaut -->
-          <option *ngFor="let car of cars" [value]="car.name">{{ car.name }}</option>
+          <option value="" disabled selected>Select Car</option>
+          <option *ngFor="let car of cars" [value]="car.marque">{{ car.marque }}</option>
         </select>
       </div>
 
-      <!-- Bloc de sélection de la localisation de la voiture -->
+      <!-- Bloc de sélection de la localisation -->
       <div class="col-md-12 mb-3">
         <div class="row">
-          <!-- Input de la localisation de la voiture -->
+          <!-- Input pour la localisation -->
           <div class="col-md-8">
             <input
               type="text"
@@ -27,23 +26,23 @@
             >
           </div>
 
-          <!-- Icônes de réinitialisation, de carte et de confirmation -->
+          <!-- Icônes d'action -->
           <div class="col-md-4 d-flex align-items-center">
-            <!-- Icône pour réinitialiser la sélection -->
+            <!-- Icône pour réinitialiser -->
             <span *ngIf="dropOffMarker"
-                  class="input-group-text choose-on-map-icon"
+                  class="input-group-text choose-on-map-icon mx-2"
                   (click)="resetDropOffLocation()"
                   title="Réinitialiser la localisation">❌</span>
 
-            <!-- Icône pour choisir une localisation sur la carte -->
+            <!-- Icône pour choisir sur la carte -->
             <span *ngIf="!dropOffMarker"
-                  class="input-group-text choose-on-map-icon"
+                  class="input-group-text choose-on-map-icon mx-2"
                   (click)="chooseDropOffLocationOnMap()"
                   title="Choisir une localisation sur la carte">📍</span>
 
-            <!-- Icône pour confirmer la sélection -->
+            <!-- Icône pour confirmer -->
             <span *ngIf="showConfirmButton"
-                  class="input-group-text choose-on-map-icon"
+                  class="input-group-text choose-on-map-icon mx-2"
                   (click)="confirmChangePosition()"
                   title="Confirmer la nouvelle position">✔️</span>
           </div>
