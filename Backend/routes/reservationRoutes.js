@@ -6,11 +6,18 @@ const protect = require('../middleware/authMiddleware');
 
 router.post('/', protect, reservationController.createReservation);
 
-router.get('/', protect, reservationController.getAllReservations);
+// Correct Order:
+router.get('/filters', reservationController.getReservationsWithFilters); // More specific path first
+// Route pour générer un QR code pour une réservation
+router.get('/:reservation_id/generateQrCode/:user_id/:voiture_id', reservationController.generateQrCode);
+
+
+router.get('/:reservation_id', reservationController.getReservationById); // More general (parameterized) path later
 
 router.get('/filters', protect, reservationController.getReservationsWithFilters);
 
 router.get('/:reservation_id', protect, reservationController.getReservationById); 
+
 
 router.put('/:reservation_id', protect, reservationController.updateReservation);
 

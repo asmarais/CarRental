@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { type } = require('os');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const carSchema = new mongoose.Schema({
@@ -12,8 +13,10 @@ const carSchema = new mongoose.Schema({
   prix_par_mois: { type: Number, required: true },
   statut: { type: Boolean, default: true },  // true = disponible, false = non disponible
   pik_up_position: { type: String, required: true }, 
-  pik_off_position: { type: String, required: true },
-  image: { type: String}
+  pik_off_position: { type: String, required: true } ,
+  imgage : { type:String },
+
+
 });
 
 carSchema.plugin(AutoIncrement, { inc_field: 'voiture_id' });
