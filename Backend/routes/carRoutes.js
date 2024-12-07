@@ -9,7 +9,7 @@ router.post('/',carController.createCar);
 router.get('/', protect, carController.getAllCars);
 router.get('/filters', protect, carController.getCarsWithFilters);
 
-router.get('/available-cars',carController.getAvailableCars);
+router.get('/available-cars',protect, carController.getAvailableCars);
 
 router.get('/:voiture_id',protect, carController.getCarById);
 
