@@ -1,9 +1,10 @@
 const Car = require('../models/car');
+const Reservation = require('../models/reservation');
 
 // Créer une nouvelle voiture
 exports.createCar = async (req, res) => {
   try {
-    const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position,img_user,img_car,rate } = req.body;
+    const { marque, annee, modele, type, immatriculation, prix_par_jour, prix_par_mois, statut,pik_up_position,pik_off_position,image } = req.body;
     
 
     const newCar = new Car({
@@ -17,9 +18,7 @@ exports.createCar = async (req, res) => {
       statut,
       pik_up_position,
       pik_off_position,
-      img_user,
-      img_car,
-      rate
+     image
 
     });
 
@@ -110,7 +109,6 @@ exports.getCarsWithFilters = async (req, res) => {
       if (statut !== undefined) carFilters.statut = statut === 'true'; 
       if (prix_par_mois) carFilters.prix_par_mois = { $gte: Number(prix_par_mois) }; 
       if (prix_par_jour) carFilters.prix_par_jour = { $gte: Number(prix_par_jour) };
-      if (rate) carFilters.rate = { $gte: Number(rate) };
 
 
       //if (agence_id) carFilters.agence_id = Number(agence_id);
@@ -129,5 +127,48 @@ exports.getCarsWithFilters = async (req, res) => {
     }
 
 
+};
+
+
+// Controller to fetch available cars
+exports.getAvailableCars= async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    // Validate input dates
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: 'Start date and end date are required.' });
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (start >= end) {
+      return res.status(400).json({ error: 'End date must be after the start date.' });
+    }
+
+    // Find reservations that overlap with the given date range
+    const overlappingReservations = await Reservation.find({
+      statut: true, // Only consider active reservations
+      $or: [
+        { date_debut: { $lte: end }, date_fin: { $gte: start } },
+      ],
+    }).select('voiture_id');
+
+    // Extract reserved car IDs
+    const reservedCarIds = overlappingReservations.map(reservation => reservation.voiture_id);
+
+    // Fetch cars that are not reserved and available
+    const availableCars = await Car.find({
+      voiture_id: { $nin: reservedCarIds },
+      statut: true, // Only include cars marked as available
+    });
+
+    // Send the list of available cars
+    res.status(200).json(availableCars);
+  } catch (error) {
+    console.error('Error fetching available cars:', error);
+    res.status(500).json({ error: 'An error occurred while fetching available cars.' });
+  }
 };
 

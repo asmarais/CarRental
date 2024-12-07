@@ -12,6 +12,7 @@ const reservationSchema = new mongoose.Schema({
   date_de_creation: { type: Date, default: Date.now },
   statut: { type: Boolean, default: true },  // true = actif, false = annulé
   avis: { type: String, default: '' },
+  rate :{type:Number ,default:0},
   token_qr: { type: String, default: '' },
 });
 // Auto-increment for user_id

@@ -3,7 +3,7 @@ const Reservation = require('../models/reservation');
 // Créer une nouvelle réservation
 exports.createReservation = async (req, res) => {
   try {
-    const { reservation_id, date_debut, date_fin, user_id, voiture_id, statut, avis, token_qr } = req.body;
+    const { reservation_id, date_debut, date_fin, user_id, voiture_id, statut, avis,rate, token_qr } = req.body;
 
     // Créer une nouvelle réservation
     const newReservation = new Reservation({
@@ -14,6 +14,7 @@ exports.createReservation = async (req, res) => {
       voiture_id,
       statut,
       avis,
+      rate,
       token_qr,
     });
 
@@ -114,7 +115,7 @@ const logger = console; // Basic logger (can be replaced with more sophisticated
 exports.getReservationsWithFilters = async (req, res) => {
   try {
     const { 
-      reservation_id, user_id, voiture_id, statut, date_debut, date_fin 
+      reservation_id, user_id, voiture_id, statut, date_debut, date_fin ,rate
     } = req.query;
 
     // Create the filter object for reservations
@@ -124,6 +125,7 @@ exports.getReservationsWithFilters = async (req, res) => {
     if (reservation_id) reservationFilters.reservation_id = Number(reservation_id);
     if (user_id) reservationFilters.user_id = Number(user_id);
     if (voiture_id) reservationFilters.voiture_id = Number(voiture_id);
+    if (rate) reservationFilters.rate = Number(rate);
 
     // Filter for status (true/false)
     if (statut !== undefined) reservationFilters.statut = statut === 'true';
