@@ -5,8 +5,12 @@ const protect = require('../middleware/authMiddleware');
 
 router.post('/',carController.createCar);
 
-router.get('/', carController.getAllCars);
-router.get('/filters', carController.getCarsWithFilters);
+
+// Récupérer toutes les voitures
+router.get('/', protect, carController.getAllCars);
+router.get('/filters', protect, carController.getCarsWithFilters);
+
+router.get('/available-cars',protect, carController.getAvailableCars);
 
 router.get('/:voiture_id', carController.getCarById);
 
