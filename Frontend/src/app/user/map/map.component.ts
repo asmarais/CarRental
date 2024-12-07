@@ -29,6 +29,14 @@ export class MapComponent implements OnInit {
   isDarkModeEnabled: boolean = false; // Déclarez la propriété et initialisez-la à `false`
   selectedCarPosition: { lat: number; lng: number } | null = null;
 
+  // Dans votre composant Angular
+  voitures: any[] = [];
+  selectedCarId: number | null = null;
+  pickupDate: string = '';
+  pickupTime: string = '';
+  dropOffDate: string = '';
+  pickupLocation: string = '';
+
   PositionIcon = L.icon({  // Définir l'icône pour les voitures
     iconUrl: 'https://cdn-icons-png.flaticon.com/512/1088/1088372.png', // Remplacez par le chemin de l'icône de voiture
     iconSize: [32, 32],
@@ -54,10 +62,11 @@ export class MapComponent implements OnInit {
 
   userid: '' | undefined;
   ngOnInit() {
-    /*const userData = this.authService.getUserDataFromToken();
+    const userData = this.authService.getUserDataFromToken();
     console.log('User data:', userData);
-    const username = userData.username;
-    this.userid = username;*/
+    const username = userData.userId;
+    this.userid = username;
+    console.log(this.userid);
 
     window.scrollTo(0, 0);
     this.getUserLocation();
@@ -162,6 +171,7 @@ export class MapComponent implements OnInit {
   fetchCars() {
     this.http.get('http://localhost:5000/api/voitures').subscribe(
       (response: any) => {
+        this.voitures = response;
         this.cars = response;  // Assuming the response is an array of cars
         this.displayCarMarkers();  // Display cars on the map after fetching
       },
@@ -531,48 +541,105 @@ resetDropOffLocation() {
       .catch(error => console.error('Error fetching reverse geocoding data:', error));
   }
 
+  pricingOption: string = '';
+  reservationId: number | null = null;
+
+
   goPay() {
-    this.loadingService.openLoadingPageAndNavigate('/user/pay', 1700);  // Naviguer vers '/user/profil' après 3 secondes
+    if (this.authService.isLoggedIn() === false) {
+      this.loadingService.openLoadingPageAndNavigate('/loRe', 1700);
+    } else if (this.reservationId) {
+      this.loadingService.openLoadingPageAndNavigate(`/user/pay/${this.reservationId}/${this.pricingOption}`, 1700);
+    } 
   }
 
-  pickupLocation: string = '';
-  pickupDate: string = '';
-  dropOffDate: string = '';
-  pickupTime: string = '';
+  goPay2() {
+    if (this.authService.isLoggedIn() === false) {
+      this.loadingService.openLoadingPageAndNavigate('/loRe', 1700);
+    } else if (this.reservationId) {
+      this.loadingService.openLoadingPageAndNavigate(`/user/pay/${this.reservationId}/${this.pricingOption}`, 1700);
+    } 
+  }
 
   
   apiUrl = 'http://localhost:5000/api/reservations'; // Remplacez par votre URL d'API
 
 
+  // Handle reservation submission
   submitReservation(form: any) {
     if (form.valid) {
       const reservationPayload = {
-        date_debut: this.pickupDate + 'T' + this.pickupTime + 'Z', // Format ISO 8601
-        date_fin: this.dropOffDate + 'T' + this.pickupTime + 'Z', // Format ISO 8601
+        date_debut: this.pickupDate + 'T' + this.pickupTime + 'Z',
+        date_fin: this.dropOffDate + 'T' + this.pickupTime + 'Z',
         user_id: this.userid, 
-        voiture_id: 5, 
-        statut: true, 
-        avis: "", 
-        token_qr: '', 
-        pickup_location: this.pickupLocation,
-        dropoff_location: this.dropOffLocation
+        voiture_id: this.selectedCarId,
+        statut: true,
+        avis: '',
+        token_qr: '',
+        pickup_location: '',
+        dropoff_location: '',
       };
-
-      this.http.post(this.apiUrl, reservationPayload).subscribe(
-        response => {
-          console.log('Réservation créée avec succès:', response);
-          alert('Réservation effectuée avec succès!');
+      this.http.post('http://localhost:5000/api/reservations', reservationPayload).subscribe(
+        (response: any) => {
+          console.log('Reservation response:', response);
+          this.reservationId = response.reservation.reservation_id; // Capture the returned reservation ID
+          this.sendNotification();
+          this.goPay();
         },
         error => {
-          console.error('Erreur lors de la création de la réservation:', error);
-          alert('Erreur lors de la réservation.');
+          console.error('Error during reservation submission:', error);
+          alert('Error submitting reservation');
         }
       );
     } else {
-      alert('Veuillez remplir tous les champs obligatoires.');
+      alert('Please fill out all fields and select a pricing option');
     }
   }
 
+  // Send a notification after successful reservation
+sendNotification() {
+  // Fetch car details
+  this.http.get(`http://localhost:5000/api/voitures/${this.selectedCarId}`).subscribe(
+    (carResponse: any) => {
+      const carDetails = carResponse; // Extract car details
+      console.log('Car details:', carDetails);
+
+      // Fetch user details
+      this.http.get(`http://localhost:5000/api/user/${this.userid}`).subscribe(
+        (userResponse: any) => {
+          const userDetails = userResponse.user; // Extract user details
+          console.log('User details:', userDetails);
+
+          // Create the message to send
+          const message = `${userDetails.nom} ${userDetails.prenom} has reserved a ${carDetails.marque} ${carDetails.modele}`;
+
+          // Prepare notification payload
+          const notificationPayload = {
+            user_id: this.userid,
+            message: message,
+            read: false
+          };
+
+          // Send the notification
+          this.http.post('http://localhost:5000/api/notifications', notificationPayload).subscribe(
+            () => {
+              console.log('Notification sent successfully');
+            },
+            error => {
+              console.error('Error sending notification:', error);
+            }
+          );
+        },
+        error => {
+          console.error('Error fetching user details:', error);
+        }
+      );
+    },
+    error => {
+      console.error('Error fetching car details:', error);
+    }
+  );
+}
  
 
 }

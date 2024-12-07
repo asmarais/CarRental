@@ -5,14 +5,14 @@ const protect = require('../middleware/authMiddleware');
 
 router.post('/',carController.createCar);
 
-router.get('/', protect, carController.getAllCars);
+router.get('/', carController.getAllCars);
+router.get('/filters', carController.getCarsWithFilters);
 
-router.get('/:voiture_id',protect, carController.getCarById);
+router.get('/:voiture_id', carController.getCarById);
 
-router.put('/:voiture_id',protect, carController.updateCar);
+router.put('/:voiture_id', carController.updateCar);
 
-router.delete('/:voiture_id',protect, carController.deleteCar);
+router.delete('/:voiture_id', carController.deleteCar);
 
-router.get('/filters', protect, carController.getCarsWithFilters);
 
 module.exports = router;

@@ -14,7 +14,9 @@ import { LoAndReComponent } from './lo-and-re/lo-and-re.component';
 const routes: Routes = [
   { path:'loRe' , component:LoAndReComponent},
   { path: 'admin', loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule) },
-  { path: 'user', loadChildren: () => import('./user/user.module').then(m => m.UserModule) }
+  { path: 'user', loadChildren: () => import('./user/user.module').then(m => m.UserModule) },
+  { path: '', redirectTo: '/user/home', pathMatch: 'full' },
+
 
 
 ];

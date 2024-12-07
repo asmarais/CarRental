@@ -28,8 +28,7 @@ const routes: Routes = [
       {path : 'profile',component:ProfileComponent},
       {path : 'load',component:LoadingComponent},
       {path : 'maps',component:MapComponent},
-      {path : 'pay',component:PayementComponent},
-
+      { path: 'pay/:reservationId/:pricingOption', component: PayementComponent },
     ]
   }
 ];

@@ -18,13 +18,9 @@ export class ProfileComponent implements OnInit {
     numero_de_telephone: '',
     adresse: '', // Adresse complète sous forme de chaîne
   };
-
-  adresseParts = {
-    street: '',
-    city: '',
-    state: '',
-  };
-
+  
+  reservations: any[] = []; // Store reservations
+  adresseParts: any;
 
   constructor(private http: HttpClient, private route: Router, private authService: AuthService) {}
 
@@ -43,6 +39,15 @@ export class ProfileComponent implements OnInit {
         console.log(data);
       },
       (error) => console.error('Erreur lors du chargement des données utilisateur:', error)
+    );
+
+    // Fetch reservations based on user_id
+    this.http.get(`http://localhost:5000/api/reservations/filters?user_id=${userId}`).subscribe(
+      (data: any) => {
+        this.reservations = data.reservations;
+        console.log(this.reservations);
+      },
+      (error) => console.error('Erreur lors du chargement des réservations:', error)
     );
   }
 
@@ -66,7 +71,7 @@ export class ProfileComponent implements OnInit {
 
   // Méthode pour mettre à jour les données utilisateur
   updateUser(): void {
-    const userId = this.userDetails.user.user_id;
+    const userId = this.userDetails.user_id;
 
     // Mettre à jour l'adresse avant d'envoyer les données
     this.updateAdresse();
@@ -90,3 +95,4 @@ export class ProfileComponent implements OnInit {
     );
   }
 }
+

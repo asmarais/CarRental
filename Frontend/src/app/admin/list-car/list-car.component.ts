@@ -44,7 +44,6 @@ export class ListCarComponent implements OnInit {
     );
   }
 
-  // Save a new car
   saveCar(): void {
     const apiUrl = 'http://localhost:5000/api/voitures';
     const carData = {
@@ -55,11 +54,12 @@ export class ListCarComponent implements OnInit {
       immatriculation: this.car.immatriculation,
       prix_par_jour: this.car.prix_par_jour,
       prix_par_mois: this.car.prix_par_mois,
-      statut: true, // Assuming car is available
+      statut: true,
       pik_up_position: this.car.pik_up_position,
-      pik_off_position: this.car.pik_off_position
+      pik_off_position: this.car.pik_off_position,
+      image: this.car.image, // Add image URL here
     };
-
+  
     this.http.post(apiUrl, carData).subscribe(
       (response) => {
         console.log('Car saved successfully:', response);
@@ -71,7 +71,7 @@ export class ListCarComponent implements OnInit {
       }
     );
   }
-
+  
   // Fetch car details for editing
   editCar(voitureId: string): void {
     const apiUrl = `http://localhost:5000/api/voitures/${voitureId}`;

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 interface Filters {
   prix_par_jour: number | null;
   prix_par_mois: number | null;
@@ -38,7 +39,7 @@ export class CarComponent implements OnInit {
   priceOption: 'day' | 'month' = 'day'; // Valeur par défaut : 'day'
 
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private router: Router) {}
 
   ngOnInit(): void {
     this.http.get<any[]>(this.apiUrl).subscribe(
@@ -49,7 +50,7 @@ export class CarComponent implements OnInit {
           category: car.type,
           price: car.prix_par_jour,
           price2: car.prix_par_mois,
-          image: 'assets/images/default-car.jpg', // Image par défaut ou autre source
+          image: car.image, // Image par défaut ou autre source
           pik_up_position: car.pik_up_position,
           pik_off_position: car.pik_off_position
         }));
@@ -58,6 +59,10 @@ export class CarComponent implements OnInit {
         console.error('Erreur lors de la récupération des voitures :', error);
       }
     );
+  }
+
+  onbook(){
+    this.router.navigate(['/user/maps']);
   }
 
   get totalPages(): number {
@@ -109,36 +114,39 @@ export class CarComponent implements OnInit {
     if (this.filters.rating !== null) {
       params.append('rating', this.filters.rating.toString());
     }
-  
+    console.log(`http://localhost:5000/api/voitures/filters?${params.toString()}`)
     // Construisez l'URL avec les paramètres de filtre
     const url = `http://localhost:5000/api/voitures/filters?${params.toString()}`;
   
     // Effectuez une requête HTTP pour récupérer les voitures filtrées
     this.http.get<any>(url).subscribe(
       (response) => {
-        const cars = Array.isArray(response.cars) ? response.cars : [];
+        // Ensure response is an array
+        const cars = Array.isArray(response) ? response : [];
+    
         if (cars.length > 0) {
           this.cars = cars.map((car: { marque: any; modele: any; type: any; prix_par_jour: any; prix_par_mois: any; image: any; pik_up_position: any; pik_off_position: any; }) => ({
             name: `${car.marque} ${car.modele}`,
             category: car.type,
             price: car.prix_par_jour,
             price2: car.prix_par_mois,
-            image: car.image || 'assets/images/default-car.jpg',  // Image par défaut si aucune image n'est spécifiée
+            image: car.image || 'assets/images/default-car.jpg', // Default image if none provided
             pik_up_position: car.pik_up_position,
             pik_off_position: car.pik_off_position,
           }));
-          this.noCarsMessage = ''; // Réinitialiser le message d'erreur s'il y a des voitures
+          this.noCarsMessage = ''; // Reset error message when cars are found
         } else {
-          this.noCarsMessage = 'No cars found with the given filters'; // Aucun résultat
-          this.cars = []; // Réinitialiser la liste des voitures
+          this.noCarsMessage = 'No cars found with the given filters'; // Message for no results
+          this.cars = []; // Reset car list if no results
         }
       },
       (error) => {
         console.error('Erreur lors de la récupération des voitures filtrées :', error);
-        this.noCarsMessage = 'An error occurred while fetching cars'; // Afficher un message d'erreur générique
-        this.cars = []; // Réinitialiser la liste des voitures en cas d'erreur
+        this.noCarsMessage = 'An error occurred while fetching cars'; // General error message
+        this.cars = []; // Reset car list on error
       }
     );
+    
   }
   
   

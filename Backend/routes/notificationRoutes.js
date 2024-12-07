@@ -4,18 +4,18 @@ const notificationController = require('../controllers/notificationController');
 const protect = require('../middleware/authMiddleware');
 
 
-router.post('/', protect, notificationController.addNotification);
+router.post('/', notificationController.addNotification);
 
-router.put('/:notification_id/read', protect, notificationController.markAsRead);
+router.put('/:notification_id/read', notificationController.markAsRead);
 
-router.delete('/:notification_id', protect, notificationController.deleteNotification);
+router.delete('/:notification_id', notificationController.deleteNotification);
 
-router.get('/filters', protect, notificationController.getNotificationsWithFilters);
+router.get('/filters', notificationController.getNotificationsWithFilters);
 
-router.delete('/user/:user_id', protect, notificationController.deleteAllNotifications);
+router.delete('/user/:user_id', notificationController.deleteAllNotifications);
 
-router.get('/user/:user_id', protect, notificationController.getAllNotifications);
+router.get('/user/:user_id', notificationController.getAllNotifications);
 
-router.get('/:notification_id', protect, notificationController.getNotificationById);
+router.get('/:notification_id', notificationController.getNotificationById);
 
 module.exports = router;

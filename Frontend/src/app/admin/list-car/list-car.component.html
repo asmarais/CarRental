@@ -15,10 +15,10 @@
                       <td>
                         <div class="Avatar-lga">
                           <img
-                            src="https://optim.tildacdn.net/tild3565-3132-4363-a130-326262623934/-/resize/824x/-/format/webp/25_years_car_side_on.png"
-                            class="img-fluid rounded"
-                            alt="Car Image"
-                          />
+                          [src]="car.image || 'https://via.placeholder.com/150'"
+                          class="img-fluid rounded"
+                          alt="Car Image"
+                        />
                         </div>
                       </td>
                       <td>
@@ -120,6 +120,18 @@
         </div>
         <div class="modal-body">
           <form #carForm="ngForm">
+            <div class="mb-3">
+              <label for="carImage" class="form-label">Image URL</label>
+              <input
+                type="text"
+                class="form-control"
+                id="carImage"
+                [(ngModel)]="car.image"
+                name="carImage"
+                placeholder="Enter the image URL"
+              />
+            </div>
+            
             <div class="mb-3">
               <label for="carBrand" class="form-label">Marque</label>
               <input type="text" class="form-control" id="carBrand" [(ngModel)]="car.marque" name="carBrand" placeholder="Marque">

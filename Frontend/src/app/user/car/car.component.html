@@ -79,33 +79,6 @@
         </div>
       </section>
       
-      <section class="col-12" id="fs_rating">
-        <span class="heading">By Rating</span>
-        <div class="contents">
-          <ul>
-            <li>
-              <span>
-                <i class="fa fa-star dark"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-              </span>
-              <span class="text-right"></span>
-            </li>
-            <li>
-              <span>
-                <i class="fa fa-star dark"></i>
-                <i class="fa fa-star dark"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-                <i class="fa fa-star"></i>
-              </span>
-              <span class="text-right"></span>
-            </li>
-          </ul>
-        </div>
-      </section>
       
       <div class="col-12 text-center">
         <button class="btn btn-primary mt-3" (click)="applyFilters()">Apply Filters</button>
@@ -166,7 +139,7 @@
                   <p>Pick-up: {{ car.pik_up_position }}</p>
                   <p>Drop-off: {{ car.pik_off_position }}</p>
                   <p class="d-flex mb-0 d-block">
-                    <a href="#" class="btn btn-primary py-2 mr-1">Book now</a>
+                    <a (click)="onbook()" class="btn btn-primary py-2 mr-1">Book now</a>
                     <a routerLink="/user/det" class="btn btn-secondary py-2 ml-1">Details</a>
                   </p>
                 </div>

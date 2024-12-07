@@ -77,8 +77,10 @@
                <div class="invoice-price-left">
                   <div class="invoice-price-row">
                      <div class="sub-price">
-                        <small>SUBTOTAL</small>
-                        <span class="text-inverse">$4,500.00</span>
+                        <small>{{ pricingOption === 'prix_par_jour' ? 'PRICE PER DAY' : 'PRICE PER MONTH' }}</small>
+                        <span class="text-inverse">
+                           ${{ pricingOption === 'prix_par_jour' ? voitureDetails?.prix_par_jour : voitureDetails?.prix_par_mois }}
+                        </span>
                      </div>
                      <div class="sub-price">
                         <i class="fa fa-plus text-muted"></i>
@@ -88,19 +90,30 @@
                         <span class="text-inverse">$108.00</span>
                      </div>
                   </div>
-               </div>
-               <div class="invoice-price-right">
-                  <small>TOTAL</small> <span class="f-w-600">$4508.00</span>
-               </div>
+                  <div class="invoice-price-right">
+                     <small>TOTAL</small>
+                     <span class="f-w-600">
+                        ${{ calculateTotal() }}
+                     </span>
+                  </div>
+                  
             </div>
             <!-- end invoice-price -->
          </div>
-         <a href="#!" class="btn btn-dark btn-lg card-footer-btn justify-content-center text-uppercase-bold-sm hover-lift-light">
-           <span class="svg-icon text-white me-2">
-             <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><title>ionicons-v5-g</title><path d="M336,208V113a80,80,0,0,0-160,0v95" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path><rect x="96" y="208" width="320" height="272" rx="48" ry="48" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></rect></svg>
-           </span>&nbsp;
-           Pay Now
-         </a>
+         <a 
+  
+  class="btn btn-dark btn-lg card-footer-btn justify-content-center text-uppercase-bold-sm hover-lift-light"
+  (click)="onPayNow()">
+  <span class="svg-icon text-white me-2">
+    <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+      <title>ionicons-v5-g</title>
+      <path d="M336,208V113a80,80,0,0,0-160,0v95" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+      <rect x="96" y="208" width="320" height="272" rx="48" ry="48" style="fill:none;stroke:#000;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></rect>
+    </svg>
+  </span>&nbsp;
+  Pay Now
+</a>
+
          <div class="qr-code-container">
            <qrcode [qrdata]="qrData" [width]="256" [errorCorrectionLevel]="'M'" [allowEmptyString]="true"></qrcode>
          </div>

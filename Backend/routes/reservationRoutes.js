@@ -1,22 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const reservationController = require('../controllers/reservationController');
-const protect = require('../middleware/authMiddleware');
+
+// Créer une réservation
+router.post('/', reservationController.createReservation);
+
+// Récupérer toutes les réservations
+router.get('/', reservationController.getAllReservations);
+
+// Correct Order:
+router.get('/filters', reservationController.getReservationsWithFilters); // More specific path first
+// Route pour générer un QR code pour une réservation
+router.get('/:reservation_id/generateQrCode/:user_id/:voiture_id', reservationController.generateQrCode);
 
 
-router.post('/', protect, reservationController.createReservation);
+router.get('/:reservation_id', reservationController.getReservationById); // More general (parameterized) path later
 
-router.get('/', protect, reservationController.getAllReservations);
+// Mettre à jour une réservation
+router.put('/:reservation_id', reservationController.updateReservation);
 
-router.get('/filters', protect, reservationController.getReservationsWithFilters);
-
-router.get('/:reservation_id', protect, reservationController.getReservationById); 
-
-router.put('/:reservation_id', protect, reservationController.updateReservation);
-
-router.delete('/:reservation_id', protect, reservationController.deleteReservation);
-
-router.get('/:reservation_id/generateQrCode/:user_id/:voiture_id', protect, reservationController.generateQrCode);
+// Supprimer une réservation
+router.delete('/:reservation_id', reservationController.deleteReservation);
 
 
 module.exports = router;

@@ -4,7 +4,7 @@ const paymentController = require('../controllers/paymentController')
 const protect = require('../middleware/authMiddleware');
 
 
-router.post('/', protect, paymentController.Add)
-router.post("/:id", protect, paymentController.Verify)
+router.post('/', paymentController.Add)
+router.post("/:id", paymentController.Verify)
 
 module.exports = router;
