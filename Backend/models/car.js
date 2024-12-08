@@ -14,7 +14,7 @@ const carSchema = new mongoose.Schema({
   statut: { type: Boolean, default: true },  // true = disponible, false = non disponible
   pik_up_position: { type: String, required: true }, 
   pik_off_position: { type: String, required: true } ,
-  imgage : { type:String },
+  image : { type:String },
 
 
 });

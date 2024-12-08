@@ -25,16 +25,16 @@ router.get('/:reservation_id/generateQrCode/:user_id/:voiture_id', reservationCo
 
 router.get('/:reservation_id', reservationController.getReservationById); // More general (parameterized) path later
 
-router.get('/filters', protect, reservationController.getReservationsWithFilters);
+router.get('/filters', reservationController.getReservationsWithFilters);
 
-router.get('/:reservation_id', protect, reservationController.getReservationById); 
+router.get('/:reservation_id', reservationController.getReservationById); 
 
 
-router.put('/:reservation_id', protect, reservationController.updateReservation);
+router.put('/:reservation_id', reservationController.updateReservation);
 
-router.delete('/:reservation_id', protect, reservationController.deleteReservation);
+router.delete('/:reservation_id', reservationController.deleteReservation);
 
-router.get('/:reservation_id/generateQrCode/:user_id/:voiture_id', protect, reservationController.generateQrCode);
+router.get('/:reservation_id/generateQrCode/:user_id/:voiture_id', reservationController.generateQrCode);
 
 
 module.exports = router;

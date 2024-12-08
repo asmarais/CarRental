@@ -7,10 +7,10 @@ router.post('/',carController.createCar);
 
 
 // Récupérer toutes les voitures
-router.get('/', protect, carController.getAllCars);
-router.get('/filters', protect, carController.getCarsWithFilters);
+router.get('/', carController.getAllCars);
+router.get('/filters', carController.getCarsWithFilters);
 
-router.get('/available-cars',protect, carController.getAvailableCars);
+router.get('/available-cars', carController.getAvailableCars);
 
 router.get('/:voiture_id', carController.getCarById);
 
