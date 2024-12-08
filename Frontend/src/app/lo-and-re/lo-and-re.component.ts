@@ -26,7 +26,7 @@ export class LoAndReComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
       phoneNumber: ['', Validators.required],
       address: ['', Validators.required],
-      cin: ['', Validators.required] // New field for CIN
+      cin: ['', Validators.required]
     });
   }
 
@@ -81,8 +81,11 @@ export class LoAndReComponent {
   
     this.http.post('http://localhost:5000/api/auth/signup', signupData).subscribe(
       response => console.log('Signup success:', response),
+
       error => console.error('Signup error:', error)
     );
+    window.location.reload();
+
   }
   
 

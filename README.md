@@ -1,4 +1,4 @@
-Voici la version mise à jour du fichier README, incluant la section des API :
+Voici le fichier README corrigé et mis à jour :
 
 ---
 
@@ -28,6 +28,7 @@ Voici la version mise à jour du fichier README, incluant la section des API :
 ---
 
 ## 🚀 Démarrage
+
 Afin de démarrer notre application facilement, nous avons créé un fichier Docker Compose pour garantir que tout fonctionne sans erreurs de compatibilité de versions. Voici l'exécution de ce projet avec les 2 méthodes.
 
 Utilisez la méthode qui vous convient le mieux en fonction de votre environnement et des outils que vous préférez.
@@ -39,7 +40,6 @@ Utilisez la méthode qui vous convient le mieux en fonction de votre environneme
 
 2. **Cloner le dépôt :**
    ```bash
-   git clone https://github.com/votre-utilisateur/carrental.git
    cd carrental
    ```
 
@@ -58,7 +58,6 @@ Utilisez la méthode qui vous convient le mieux en fonction de votre environneme
 
 1. **Cloner le dépôt :**
    ```bash
-   git clone https://github.com/votre-utilisateur/carrental.git
    cd carrental
    ```
 
@@ -67,7 +66,7 @@ Utilisez la méthode qui vous convient le mieux en fonction de votre environneme
    - Allez dans le dossier `Frontend` et exécutez :
      ```bash
      cd Frontend
-     npm install
+     npm install --legacy-peer-deps
      ```
 
 3. **Installer les dépendances pour le backend :**
@@ -96,76 +95,18 @@ Votre application sera accessible à `http://localhost:4200` pour le frontend et
 
 ---
 
-## LES API
+## Test de projet
 
-### **Endpoints Backend**
+### Tester la partie admin
+Accédez au lien : [http://localhost:4200/loRe](http://localhost:4200/loRe)
+- **Email :** admin@gmail.com
+- **Mot de passe :** admin123
 
-#### **1. Authentification**
-- **POST /api/auth/signup**  
-  Permet aux utilisateurs de s'inscrire avec un email et un mot de passe.
-  - Corps de la requête :
-    ```json
-    {
-      "nom": "John",
-      "prenom": "Doe",
-      "email": "exemple@gmail.com",
-      "mot_de_passe": "motdepasse",
-      "numero_de_telephone": "1234567890",
-      "adresse": "123 Main St",
-      "cin": "14424412",
-    }
-    ```
-
-- **POST /api/auth/login**  
-  Permet aux utilisateurs de se connecter et de récupérer un token JWT.
-  - Corps de la requête :
-    ```json
-    {
-      "email": "exemple@gamil.com",
-      "password": "motdepasse"
-    }
-    ```
-
-#### **2. Voitures**
-- **GET /api/voitures**  
-  Récupère toutes les voitures disponibles.
-  
-- **POST /api/voitures**  
-  Permet aux administrateurs d'ajouter une nouvelle voiture à la flotte.
-  - Corps de la requête :
-    ```json
-    {
-        "marque": "4454",
-        "annee": 2023,
-        "modele": "ffef",
-        "type": "ccsc",
-        "immatriculation": "43545",
-        "prix_par_jour": 535435,
-        "prix_par_mois": 5454,
-        "statut": true,
-        "pik_up_position": "Downtown",
-        "pik_off_position": "Airport",
-        "image": "url"
-    }
-    ```
-
-- **PUT /api/voitures/{id}**  
-  Permet aux administrateurs de mettre à jour les détails d'une voiture.
-  - Corps de la requête :
-    ```json
-    {
-      "prix_par_jour": 60,
-      "disponibilite": false
-    }
-    ```
-
-- **DELETE /api/voitures/{id}**  
-  Supprime une voiture de la flotte.
-
-#### **3. Réservations**
-
-#### **4. Gestion des paiements**
-
-**Note :** Pour accéder aux API protégées, n'oubliez pas de passer le token JWT dans l'en-tête `Authorization` sous la forme `Bearer <votre_token>`.
+### Tester la partie utilisateur
+1. Créez un compte utilisateur.
+2. Accédez au lien de réservation pour réserver une voiture, puis vous serez redirigé vers une interface de paiement.
+3. Pour effectuer des tests de paiements par portefeuille, utilisez le code `111111` pour simuler une transaction réussie et `000000` pour générer une erreur.
+4. Pour tester les paiements par carte bancaire ou postale, saisissez le numéro `4242 4242 4242 4242` pour une transaction réussie, ou toute autre combinaison de 16 chiffres pour simuler une erreur.
 
 ---
+
