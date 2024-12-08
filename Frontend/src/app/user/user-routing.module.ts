@@ -23,7 +23,7 @@ const routes: Routes = [
       {path : 'footer',component:FooterComponent},
       {path : 'price',component:PriceComponent},
       {path : 'car',component:CarComponent},
-      {path : 'det',component:DetailsComponent},
+      {path : 'det/:carid',component:DetailsComponent},
       {path : 'contact',component:ContactComponent},
       {path : 'profile',component:ProfileComponent},
       {path : 'load',component:LoadingComponent},

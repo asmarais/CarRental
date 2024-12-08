@@ -46,6 +46,7 @@ export class CarComponent implements OnInit {
       (data) => {
         // Mapping les données pour le design
         this.cars = data.map(car => ({
+          voiture_id: car.voiture_id,
           name: `${car.marque} ${car.modele}`,
           category: car.type,
           price: car.prix_par_jour,

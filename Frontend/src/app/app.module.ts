@@ -20,7 +20,6 @@ import { LoAndReComponent } from './lo-and-re/lo-and-re.component';
 
 
 
-
 @NgModule({
   declarations: [
     AppComponent,

@@ -16,7 +16,7 @@ export class ProfileComponent implements OnInit {
     prenom: '',
     email: '',
     numero_de_telephone: '',
-    adresse: '', // Adresse complète sous forme de chaîne
+    adresse: '', // Adresse complfvdfvdsfsète sous forme de chaîne
   };
   
   reservations: any[] = []; // Store reservations

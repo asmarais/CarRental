@@ -24,7 +24,7 @@ const routes: Routes = [
       { path: 'listU', component: ListUserComponent },
       { path: 'listC', component: ListCarComponent },
       { path: 'listR', component: ListResComponent },
-      { path: 'detCar', component: DetCarComponent },
+      { path: 'detCar/:carid', component: DetCarComponent },
       { path: 'maps', component: MapsAComponent },
 
 

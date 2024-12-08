@@ -139,6 +139,62 @@
 			var chartBar1 = new ApexCharts(document.querySelector("#chartBar"), options);
 			chartBar1.render();
 	}	
+
+	document.addEventListener('DOMContentLoaded', () => {
+  if (typeof dzChartlist !== 'undefined') {
+    dzChartlist.load = function () {
+      const reservations = window.initialReservations || [];
+
+      // Process data for charts
+      const monthlyData = {};
+      reservations.forEach((reservation) => {
+        const date = new Date(reservation.date_de_creation);
+        const month = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        monthlyData[month] = (monthlyData[month] || 0) + 1;
+      });
+
+      // Prepare chart data
+      const months = Object.keys(monthlyData).sort();
+      const counts = months.map((month) => monthlyData[month]);
+
+      // Render chart
+      const options = {
+        series: [
+          {
+            name: 'Reservations',
+            data: counts
+          }
+        ],
+        chart: {
+          type: 'bar',
+          height: 350
+        },
+        xaxis: {
+          categories: months,
+          labels: {
+            style: {
+              fontSize: '13px',
+              fontFamily: 'poppins'
+            }
+          }
+        },
+        colors: ['#80ec67'],
+        plotOptions: {
+          bar: {
+            borderRadius: 8,
+            columnWidth: '50%'
+          }
+        }
+      };
+
+      const chart = new ApexCharts(document.querySelector('#chartBar'), options);
+      chart.render();
+    };
+  }
+});
+
+
+	
 	
 	var chartBar2 = function(){
 		

@@ -76,12 +76,13 @@
                       </td>
                       <td>
                         <button
-                          type="button"
-                          routerLink="/admin/detCar"
-                          class="btn btn-primary waves-effect waves-light color"
-                        >
-                          View
-                        </button>
+  type="button"
+  [routerLink]="['/admin/detCar', car.voiture_id]" 
+  class="btn btn-primary waves-effect waves-light color"
+>
+  View
+</button>
+
                       </td>
                       <!-- Menu Dropdown Edit/Delete -->
                     <td>
